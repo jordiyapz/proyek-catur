@@ -1,9 +1,52 @@
 class Board {
     constructor() {
         this.pos = {x:Global.border, y:Global.border};        
-        this.size = Global.scale;
+        this.size = Global.tileSize;
+        this.whitePieces = [];
+        this.blackPieces = [];
+        this.setupPieces();
+    }
 
-        this.createMatrix();
+    getPiece(x, y) {
+        const pieces = this.whitePieces.copyWithin(0,0).concat(this.blackPieces);
+        for (const piece of pieces) {
+            const pos = {
+                x : piece.coord.x*this.size,
+                y : piece.coord.y*this.size
+            }
+            if (
+                x > pos.x && x < pos.x + this.size &&
+                y > pos.y && y < pos.y + this.size                
+            ) return piece;                    
+        }
+        return null;
+    }
+
+    setupPieces() {
+        for (let i = 0; i < 8; i++) {
+            this.blackPieces.push(new Pawn(i, 1, false))
+            this.whitePieces.push(new Pawn(i, 6, true))
+        }
+        this.blackPieces.push(
+            new Rook(0, 0, false),
+            new Knight(1, 0, false),
+            new Bishop(2, 0, false),
+            new Queen(3, 0, false),
+            new King(4, 0, false),
+            new Bishop(5, 0, false),
+            new Knight(6, 0, false),
+            new Rook(7, 0, false)
+        )
+        this.whitePieces.push(
+            new Rook(0, 7, true),
+            new Knight(1, 7, true),
+            new Bishop(2, 7, true),
+            new Queen(3, 7, true),
+            new King(4, 7, true),
+            new Bishop(5, 7, true),
+            new Knight(6, 7, true),
+            new Rook(7, 7, true)
+        )
     }
 
     render () {
@@ -17,38 +60,40 @@ class Board {
                 );
             }
         }
-        for (let i = 0; i < 8; i++) {
-            for (let j = 0; j < 8; j++) {
-                const piece = this.matrix[i][j];
-                if (piece != undefined) {
-                    piece.render();
-                }
-            }
+        this.whitePieces.forEach(piece => {
+            piece.render(this.pos.x, this.pos.y, this.size);
+        });
+        this.blackPieces.forEach(piece => {
+            piece.render(this.pos.x, this.pos.y, this.size);
+        });
+        if (this.ghost) {
+            this.ghost.render(
+                mouseX - this.offset.x, 
+                mouseY - this.offset.y,
+                this.size
+            );
         }
     }
-    createMatrix() {
-        this.matrix = new Array(8);
-        for (let i = 0; i < 8; i++) {
-            this.matrix[i] = new Array(8);
-        }
-        for (let i = 0; i < 8; i++) {
-            let color = (i < 2)? 'w':'b';
-            for (let j = 0; j < 8; j++) {
-                const {x, y} = {
-                    x: this.pos.x + j*this.size,
-                    y: this.pos.y + i*this.size
-                }
-                let piece;
-                if (i == 1 || i == 6) piece = new Pawn({x, y}, color);
-                if (i == 0 || i == 7) {
-                    if (j == 0 || j == 7) piece = new Rook({x, y}, color);
-                    if (j == 1 || j == 6) piece = new Knight({x, y}, color);
-                    if (j == 2 || j == 5) piece = new Bishop({x, y}, color);
-                    if (j == 3) piece = new King({x, y}, color);
-                    if (j == 4) piece = new Queen({x, y}, color);
-                }
-                this.matrix[i][j] = piece;
+
+    onMousePressed () {    
+        if (!this.dragging) {
+            const piece = this.getPiece(mouseX, mouseY);
+            if (piece) {
+                this.ghost = piece.createGhost();                
+                // const x = mouseX % this.size;
+                // const y = mouseY % this.size;
+                const x = this.size / 2;
+                const y = x;
+                this.offset = {x, y};
+                this.dragging = true;
             }
+        } else if (this.ghost) {
+            const {x, y} = {mouseX, mouseY};
+            this.ghost.pos = {x, y};
         }
+    }
+    onMouseReleased() {
+        this.dragging = false;
+        this.ghost = null;
     }
 }

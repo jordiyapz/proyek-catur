@@ -1,10 +1,18 @@
-let canvas, board;
+let canvas, gm;
 
 function setup() {
     canvas = createCanvas(Global.width, Global.height);
-    board = new Board();
+    gm = new GameModule();
 }
 function draw() {
     background(0);
-    board.render()
+    gm.render()
+}
+
+function mousePressed() {
+    gm.onMousePressed();
+}
+
+function mouseReleased() {
+    gm.onMouseReleased();
 }

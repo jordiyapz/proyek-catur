@@ -1,12 +1,12 @@
 const Global = {
-    scale: 1,
+    tileSize: 1,
     width: 600,
     height: 600,
     images: {piece:null},
     border: 5
 };
 
-Global.scale = (Global.width - Global.border*2) / 8;
+Global.tileSize = (Global.width - Global.border*2) / 8;
 
 function preload() {
     Global.images.piece = {
@@ -27,4 +27,5 @@ function preload() {
             loadImage('assets/pieces/black.king.png')
         ]
     };
+    console.log("Preloaded", Global.images.piece)
 }
