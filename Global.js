@@ -27,5 +27,4 @@ function preload() {
             loadImage('assets/pieces/black.king.png')
         ]
     };
-    console.log("Preloaded", Global.images.piece)
 }

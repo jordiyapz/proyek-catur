@@ -1,7 +1,7 @@
 class Piece {
     constructor(x, y, isWhite, idx) {
         this.coord = createVector(x, y);
-        this.white = isWhite;
+        this.isWhite = isWhite;
         this.exist = true;
         if (isWhite) 
             this.img = Global.images.piece.white[idx];
@@ -10,7 +10,11 @@ class Piece {
     }
 
     move(x, y) {
-        this.coord = {x, y};
+        this.coord.set(x, y);
+    }
+
+    getPossibleMoves(pieces) {
+        throw new Error('getPossibleMoves must be overriden');
     }
 
     createGhost() {

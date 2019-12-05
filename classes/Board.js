@@ -4,7 +4,21 @@ class Board {
         this.size = Global.tileSize;
         this.whitePieces = [];
         this.blackPieces = [];
-        this.setupPieces();
+        this.setupPieces();    
+    }
+
+    toPos(coord) {
+        const pos = createVector(coord.x, coord.y)
+            .mult(this.size)
+            .add(createVector(this.pos.x, this.pos.y));
+        return pos;
+    }
+    toCoord(pos, posy) {        
+        if (posy) pos = createVector(pos, posy);
+        const coord = createVector(pos.x, pos.y)            
+            .sub(createVector(this.pos.x, this.pos.y))
+            .div(this.size);
+        return coord.set(Math.floor(coord.x), Math.floor(coord.y));
     }
 
     getPiece(x, y) {
@@ -23,10 +37,10 @@ class Board {
     }
 
     setupPieces() {
-        for (let i = 0; i < 8; i++) {
-            this.blackPieces.push(new Pawn(i, 1, false))
-            this.whitePieces.push(new Pawn(i, 6, true))
-        }
+        // for (let i = 0; i < 8; i++) {
+        //     this.blackPieces.push(new Pawn(i, 1, false))
+        //     this.whitePieces.push(new Pawn(i, 6, true))
+        // }
         this.blackPieces.push(
             new Rook(0, 0, false),
             new Knight(1, 0, false),
@@ -51,13 +65,23 @@ class Board {
 
     render () {
         for(let i = 0; i < 8; i++) {
-            for (let j = 0; j < 8; j++) {
-                fill(((i+j + 1) % 2) * 255);
+            for (let j = 0; j < 8; j++) {                
+                noStroke();
+                if ((i+j) % 2 == 1)
+                    fill(232, 235, 239);            
+                else fill(125, 135, 150);
                 rect(
                     this.pos.x + j * this.size , 
                     this.pos.y + i * this.size ,
                     this.size , this.size
                 );
+            }
+        }
+        if (this.possibleMoves) {
+            fill(0, 255, 0, 125);
+            for (const vec of this.possibleMoves) {
+                const pos = this.toPos(vec);
+                rect(pos.x, pos.y, this.size, this.size);
             }
         }
         this.whitePieces.forEach(piece => {
@@ -77,11 +101,12 @@ class Board {
 
     onMousePressed () {    
         if (!this.dragging) {
-            const piece = this.getPiece(mouseX, mouseY);
-            if (piece) {
-                this.ghost = piece.createGhost();                
-                // const x = mouseX % this.size;
-                // const y = mouseY % this.size;
+            this.movingPiece = this.getPiece(mouseX, mouseY);
+            if (this.movingPiece) {
+                this.possibleMoves = this.movingPiece.getPossibleMoves(
+                    (this.movingPiece.isWhite)? this.whitePieces:this.blackPieces
+                );  
+                this.ghost = this.movingPiece.createGhost();
                 const x = this.size / 2;
                 const y = x;
                 this.offset = {x, y};
@@ -94,6 +119,17 @@ class Board {
     }
     onMouseReleased() {
         this.dragging = false;
-        this.ghost = null;
+        if (this.movingPiece) {
+            const mouseVec = this.toCoord(mouseX, mouseY);
+            for (const c of this.possibleMoves) {
+                if(mouseVec.equals(c)) {
+                    this.movingPiece.move(c.x, c.y);
+                    break;
+                }
+            }
+            this.movingPiece = null;
+            this.possibleMoves = null;
+            this.ghost = null;
+        }
     }
 }
