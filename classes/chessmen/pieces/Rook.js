@@ -1,12 +1,5 @@
 class Rook extends Piece {
     constructor(x, y, isWhite) {
-<<<<<<< Updated upstream
-        super(x, y, isWhite, 1);
-    }
-    getPossibleMoves(pieces) {
-        const moves = [];
-        const c = this.coord;
-=======
         super(x, y, isWhite, 1, 'rook');
     }
 
@@ -27,7 +20,6 @@ class Rook extends Piece {
             friends = pieces.black;
             foes = pieces.white;
         }
->>>>>>> Stashed changes
 
         for(let stop=false, vec = createVector(c.x, c.y-1);
             vec.y >= 0; vec.add(0, -1)
@@ -39,8 +31,6 @@ class Rook extends Piece {
                 }
             }
             if (stop) break;
-<<<<<<< Updated upstream
-=======
             for (const p of foes) {
                 if (vec.equals(p.coord)) {
                     stop = true;
@@ -50,7 +40,6 @@ class Rook extends Piece {
                 }
             }
             if (stop) break;
->>>>>>> Stashed changes
             moves.push(vec.copy());
         }
 
@@ -64,8 +53,6 @@ class Rook extends Piece {
                 }
             }
             if (stop) break;
-<<<<<<< Updated upstream
-=======
             for (const p of foes) {
                 if (vec.equals(p.coord)) {
                     stop = true;
@@ -75,7 +62,6 @@ class Rook extends Piece {
                 }
             }
             if (stop) break;
->>>>>>> Stashed changes
             moves.push(vec.copy());
         }
 
@@ -111,12 +97,6 @@ class Rook extends Piece {
                 }
             }
             if (stop) break;
-<<<<<<< Updated upstream
-            moves.push(vec.copy());
-        }
-
-        return moves;
-=======
             for (const p of foes) {
                 if (vec.equals(p.coord)) {
                     stop = true;
@@ -130,6 +110,5 @@ class Rook extends Piece {
         }
 
         return {moves, captureMoves};
->>>>>>> Stashed changes
     }
 }

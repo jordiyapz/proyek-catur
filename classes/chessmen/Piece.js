@@ -22,8 +22,8 @@ class Piece {
         throw new Error('getHashMoves must be overriden');
     }
 
-    createGhost() {
-        return new GhostPiece(this.img);
+    createGhost(x, y, size) {
+        return new GhostPiece(this.img, x, y, size);
     }
 
     render(initX, initY, size) {

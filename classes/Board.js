@@ -3,6 +3,14 @@ class Board {
         this.pos = {x:Global.border, y:Global.border};
         this.size = Global.tileSize;
         this.turn = 1; // 0 == black, 1 == white;
+        this.isOnCheck = false;
+        this.movingPiece = null;
+        this.possibleMoves = null;
+        this.hashMoves = null;
+        this.captureMoves = null;
+        this.offset = null;
+        this.ghost = null;
+        this.dragging = null;
 
         this.whitePieces = [];
         this.blackPieces = [];
@@ -66,10 +74,10 @@ class Board {
     }
 
     render () {
+        noStroke();
         for(let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
-                noStroke();
-                if ((i+j) % 2 == 1)
+                if ((i+j) % 2 == 0)
                     fill(232, 235, 239);
                 else fill(125, 135, 150);
                 rect(
@@ -79,6 +87,7 @@ class Board {
                 );
             }
         }
+
         if (this.possibleMoves) {
             fill(0, 255, 0, 160);
             for (const vec of this.hashMoves) {
@@ -91,53 +100,78 @@ class Board {
                 rect(pos.x, pos.y, this.size, this.size);
             }
         }
-        this.whitePieces.forEach(piece => {
-            piece.render(this.pos.x, this.pos.y, this.size);
-        });
-        this.blackPieces.forEach(piece => {
-            piece.render(this.pos.x, this.pos.y, this.size);
-        });
-        if (this.ghost) {
-            this.ghost.render(
-                mouseX - this.offset.x,
-                mouseY - this.offset.y,
-                this.size
-            );
+        for (const p of this.whitePieces) {
+            p.render(this.pos.x, this.pos.y, this.size);
         }
+        for (const p of this.blackPieces) {
+            p.render(this.pos.x, this.pos.y, this.size);
+        }
+        if (this.ghost) {
+            this.ghost.render();
+        }
+    }
+
+    rotate () {
+        this.blackPieces.forEach((p, idx, arr) => {
+            if (p.type == 'pawn') {
+                p.dir = (p.dir == 1)? 0:1;
+            }
+            const c = p.coord;
+            c.set(Math.abs(7-c.x), Math.abs(7-c.y));
+        });
+        this.whitePieces.forEach((p, idx, arr) => {
+            if (p.type == 'pawn') {
+                p.dir = (p.dir == 1)? 0:1;
+            }
+            const c = p.coord;
+            c.set(Math.abs(7-c.x), Math.abs(7-c.y));
+        });
+    }
+
+    eval () {
+        const whiteKing = this.whitePieces.find(p => p.type == 'king');
+        const blackKing = this.blackPieces.find(p => p.type == 'king');
+        const pieces = {white:this.whitePieces,black:this.blackPieces};
+        for (const p of this.blackPieces) {
+            const captureMoves = p.getPossibleMoves(pieces).captureMoves;
+            for (const c of captureMoves) {
+                if (c.equals(whiteKing.coord)) {
+                    return true;
+                }
+            }
+        }
+        for (const p of this.whitePieces) {
+            const captureMoves = p.getPossibleMoves(pieces).captureMoves;
+            for (const c of captureMoves) {
+                if (c.equals(blackKing.coord)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     onMousePressed () {
         if (!this.dragging) {
             this.movingPiece = this.getPiece(mouseX, mouseY);
             if (this.movingPiece) {
-<<<<<<< Updated upstream
-                this.possibleMoves = this.movingPiece.getPossibleMoves(
-                    (this.movingPiece.isWhite)? this.whitePieces:this.blackPieces
-                );
-                this.ghost = this.movingPiece.createGhost();
-                const x = this.size / 2;
-                const y = x;
-                this.offset = {x, y};
-                this.dragging = true;
-=======
                 if (this.movingPiece.isWhite == (this.turn)) {
                     this.possibleMoves = this.movingPiece.getPossibleMoves({
                         white: this.whitePieces,
-                        black:this.blackPieces
+                        black: this.blackPieces
                     });
                     this.hashMoves = this.possibleMoves.moves;
                     this.captureMoves = this.possibleMoves.captureMoves;
-                    this.ghost = this.movingPiece.createGhost();
-                    const x = this.size / 2;
-                    const y = x;
-                    this.offset = {x, y};
+                    this.offset = this.size / 2;
+                    this.ghost = this.movingPiece.createGhost(mouseX-this.offset, mouseY-this.offset, this.size);
                     this.dragging = true;
                 } else this.movingPiece = null;
->>>>>>> Stashed changes
             }
-        } else if (this.ghost) {
-            const {x, y} = {mouseX, mouseY};
-            this.ghost.pos = {x, y};
+        }
+    }
+    onMouseDragged() {
+        if (this.ghost) {
+            this.ghost.pos.set(mouseX-this.offset, mouseY-this.offset);
         }
     }
     onMouseReleased() {
@@ -155,7 +189,10 @@ class Board {
                         }
                     }
                     this.movingPiece.move(c.x, c.y);
+                    if (this.eval()) this.isOnCheck = true;
+                    else if (this.isOnCheck) this.isOnCheck = false;
                     this.turn = (!(this.turn == 1))? 1:0;
+                    this.rotate();
                     break;
                 }
             }

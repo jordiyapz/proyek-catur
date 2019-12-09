@@ -31,7 +31,7 @@ class Knight extends Piece {
                     if (vec.equals(p.coord)) skip = true;
                 if (!skip &&
                     vec.x >= 0 && vec.y >= 0 &&
-                    vec.y < 8 && vec.y < 8
+                    vec.x < 8 && vec.y < 8
                 ){
                     if (((vec.x-c.x)**2) + ((vec.y-c.y)**2) == 5) {
                         for(const p of foes) {

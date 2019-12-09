@@ -28,3 +28,11 @@ function preload() {
         ]
     };
 }
+
+function resizePieceImages (size) {
+    const pieces = Global.images.piece;
+    for (let i = 0; i < 6; i++) {
+        pieces.white[i].resize(size, size);
+        pieces.black[i].resize(size, size);
+    }
+}
