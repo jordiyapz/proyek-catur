@@ -4,7 +4,7 @@ class GameModule {
     }
     render() {
         this.board.render();
-    }    
+    }
     onMousePressed() {
         this.board.onMousePressed();
     }

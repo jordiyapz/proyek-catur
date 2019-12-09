@@ -6,7 +6,7 @@ function setup() {
 }
 function draw() {
     background(0);
-    gm.render()
+    gm.render();
 }
 
 function mousePressed() {

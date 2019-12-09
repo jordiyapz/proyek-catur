@@ -1,7 +1,7 @@
 const Global = {
     tileSize: 1,
-    width: 600,
-    height: 600,
+    width: 540,
+    height: 540,
     images: {piece:null},
     border: 5
 };
