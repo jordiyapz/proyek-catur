@@ -1,10 +1,10 @@
 class Board {
     constructor() {
-        this.pos = {x:Global.border, y:Global.border};        
+        this.pos = {x:Global.border, y:Global.border};
         this.size = Global.tileSize;
         this.whitePieces = [];
         this.blackPieces = [];
-        this.setupPieces();    
+        this.setupPieces();
     }
 
     toPos(coord) {
@@ -13,9 +13,9 @@ class Board {
             .add(createVector(this.pos.x, this.pos.y));
         return pos;
     }
-    toCoord(pos, posy) {        
+    toCoord(pos, posy) {
         if (posy) pos = createVector(pos, posy);
-        const coord = createVector(pos.x, pos.y)            
+        const coord = createVector(pos.x, pos.y)
             .sub(createVector(this.pos.x, this.pos.y))
             .div(this.size);
         return coord.set(Math.floor(coord.x), Math.floor(coord.y));
@@ -30,8 +30,8 @@ class Board {
             }
             if (
                 x > pos.x && x < pos.x + this.size &&
-                y > pos.y && y < pos.y + this.size                
-            ) return piece;                    
+                y > pos.y && y < pos.y + this.size
+            ) return piece;
         }
         return null;
     }
@@ -65,13 +65,13 @@ class Board {
 
     render () {
         for(let i = 0; i < 8; i++) {
-            for (let j = 0; j < 8; j++) {                
+            for (let j = 0; j < 8; j++) {
                 noStroke();
                 if ((i+j) % 2 == 1)
-                    fill(232, 235, 239);            
+                    fill(232, 235, 239);
                 else fill(125, 135, 150);
                 rect(
-                    this.pos.x + j * this.size , 
+                    this.pos.x + j * this.size ,
                     this.pos.y + i * this.size ,
                     this.size , this.size
                 );
@@ -92,20 +92,20 @@ class Board {
         });
         if (this.ghost) {
             this.ghost.render(
-                mouseX - this.offset.x, 
+                mouseX - this.offset.x,
                 mouseY - this.offset.y,
                 this.size
             );
         }
     }
 
-    onMousePressed () {    
+    onMousePressed () {
         if (!this.dragging) {
             this.movingPiece = this.getPiece(mouseX, mouseY);
             if (this.movingPiece) {
                 this.possibleMoves = this.movingPiece.getPossibleMoves(
                     (this.movingPiece.isWhite)? this.whitePieces:this.blackPieces
-                );  
+                );
                 this.ghost = this.movingPiece.createGhost();
                 const x = this.size / 2;
                 const y = x;

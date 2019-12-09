@@ -1,10 +1,10 @@
 class Rook extends Piece {
     constructor(x, y, isWhite) {
         super(x, y, isWhite, 1);
-    }   
+    }
     getPossibleMoves(pieces) {
         const moves = [];
-        const c = this.coord;   
+        const c = this.coord;
 
         for(let stop=false, vec = createVector(c.x, c.y-1);
             vec.y >= 0; vec.add(0, -1)
@@ -13,10 +13,10 @@ class Rook extends Piece {
                 if (vec.equals(p.coord)) {
                     stop = true;
                     break;
-                }                           
+                }
             }
             if (stop) break;
-            moves.push(vec.copy());            
+            moves.push(vec.copy());
         }
 
         for(let stop=false, vec = createVector(c.x, c.y+1);
@@ -26,10 +26,10 @@ class Rook extends Piece {
                 if (vec.equals(p.coord)) {
                     stop = true;
                     break;
-                }                           
+                }
             }
             if (stop) break;
-            moves.push(vec.copy());            
+            moves.push(vec.copy());
         }
 
         for(let stop=false, vec = createVector(c.x+1, c.y);
@@ -39,10 +39,10 @@ class Rook extends Piece {
                 if (vec.equals(p.coord)) {
                     stop = true;
                     break;
-                }                           
+                }
             }
             if (stop) break;
-            moves.push(vec.copy());            
+            moves.push(vec.copy());
         }
 
         for(let stop=false, vec = createVector(c.x-1, c.y);
@@ -52,12 +52,12 @@ class Rook extends Piece {
                 if (vec.equals(p.coord)) {
                     stop = true;
                     break;
-                }                           
+                }
             }
             if (stop) break;
-            moves.push(vec.copy());            
+            moves.push(vec.copy());
         }
-        
-        return moves;        
-    } 
+
+        return moves;
+    }
 }
