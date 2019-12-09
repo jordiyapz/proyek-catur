@@ -1,13 +1,52 @@
 class Rook extends Piece {
     constructor(x, y, isWhite) {
         super(x, y, isWhite, 1, 'rook');
+        this.castlingable = true;
     }
 
-    getHashMoves(pieces) {
-        return this.getHashMoves(pieces);
+    move(x, y) {
+        this.coord.set(x, y);
+        this.castlingable = false;
+    }
+
+    clone() {
+        const {x, y} = this.coord;
+        return new Rook(x, y, this.isWhite);
     }
 
     getPossibleMoves(pieces) {
+        let {moves, captureMoves} = this.getHashMoves(pieces);
+        if (!this.isOnCheck) return {moves, captureMoves};
+        captureMoves = [];
+        let foes = (this.isWhite)? pieces.black:pieces.white;
+
+        for (let i = moves.length-1; i >= 0; i--) {
+            const move = moves[i];
+            const clone = new BoardLite (pieces);
+            const that = this;
+            const piece = ((this.isWhite)?clone.whitePieces:clone.blackPieces).find(p => p.type == that.type);
+
+            const foes = (this.isWhite)? clone.blackPieces:clone.whitePieces;
+            const foeId = foes.findIndex(p => p.coord.equals(move));
+            if (foeId >= 0) {
+                foes.splice(foeId, 1);
+            }
+            piece.move(move.x, move.y);
+            if (clone.eval()) {
+                moves.splice(i, 1);
+            }
+        }
+        for (const move of moves) {
+            for (const p of foes) {
+                if (move.equals(p.coord)) {
+                    captureMoves.push(move.copy());
+                }
+            }
+        }
+        return {moves, captureMoves};
+    }
+
+    getHashMoves(pieces) {
         const moves = [];
         const captureMoves = [];
         const c = this.coord;

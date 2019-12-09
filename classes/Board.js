@@ -1,9 +1,7 @@
-class Board {
-    constructor() {
-        this.pos = {x:Global.border, y:Global.border};
-        this.size = Global.tileSize;
-        this.turn = 1; // 0 == black, 1 == white;
-        this.isOnCheck = false;
+class Board extends BoardLite {
+    constructor(pieces) {
+        super(pieces);
+        this.autoRotate = false;
         this.movingPiece = null;
         this.possibleMoves = null;
         this.hashMoves = null;
@@ -11,10 +9,6 @@ class Board {
         this.offset = null;
         this.ghost = null;
         this.dragging = null;
-
-        this.whitePieces = [];
-        this.blackPieces = [];
-        this.setupPieces();
     }
 
     toPos(coord) {
@@ -44,33 +38,6 @@ class Board {
             ) return piece;
         }
         return null;
-    }
-
-    setupPieces() {
-        for (let i = 0; i < 8; i++) {
-            this.blackPieces.push(new Pawn(i, 1, false));
-            this.whitePieces.push(new Pawn(i, 6, true));
-        }
-        this.blackPieces.push(
-            new Rook(0, 0, false),
-            new Knight(1, 0, false),
-            new Bishop(2, 0, false),
-            new Queen(3, 0, false),
-            new King(4, 0, false),
-            new Bishop(5, 0, false),
-            new Knight(6, 0, false),
-            new Rook(7, 0, false)
-        );
-        this.whitePieces.push(
-            new Rook(0, 7, true),
-            new Knight(1, 7, true),
-            new Bishop(2, 7, true),
-            new Queen(3, 7, true),
-            new King(4, 7, true),
-            new Bishop(5, 7, true),
-            new Knight(6, 7, true),
-            new Rook(7, 7, true)
-        );
     }
 
     render () {
@@ -111,46 +78,6 @@ class Board {
         }
     }
 
-    rotate () {
-        this.blackPieces.forEach((p, idx, arr) => {
-            if (p.type == 'pawn') {
-                p.dir = (p.dir == 1)? 0:1;
-            }
-            const c = p.coord;
-            c.set(Math.abs(7-c.x), Math.abs(7-c.y));
-        });
-        this.whitePieces.forEach((p, idx, arr) => {
-            if (p.type == 'pawn') {
-                p.dir = (p.dir == 1)? 0:1;
-            }
-            const c = p.coord;
-            c.set(Math.abs(7-c.x), Math.abs(7-c.y));
-        });
-    }
-
-    eval () {
-        const whiteKing = this.whitePieces.find(p => p.type == 'king');
-        const blackKing = this.blackPieces.find(p => p.type == 'king');
-        const pieces = {white:this.whitePieces,black:this.blackPieces};
-        for (const p of this.blackPieces) {
-            const captureMoves = p.getPossibleMoves(pieces).captureMoves;
-            for (const c of captureMoves) {
-                if (c.equals(whiteKing.coord)) {
-                    return true;
-                }
-            }
-        }
-        for (const p of this.whitePieces) {
-            const captureMoves = p.getPossibleMoves(pieces).captureMoves;
-            for (const c of captureMoves) {
-                if (c.equals(blackKing.coord)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     onMousePressed () {
         if (!this.dragging) {
             this.movingPiece = this.getPiece(mouseX, mouseY);
@@ -170,9 +97,7 @@ class Board {
         }
     }
     onMouseDragged() {
-        if (this.ghost) {
-            this.ghost.pos.set(mouseX-this.offset, mouseY-this.offset);
-        }
+        if (this.ghost) this.ghost.pos.set(mouseX-this.offset, mouseY-this.offset);
     }
     onMouseReleased() {
         this.dragging = false;
@@ -189,10 +114,20 @@ class Board {
                         }
                     }
                     this.movingPiece.move(c.x, c.y);
-                    if (this.eval()) this.isOnCheck = true;
-                    else if (this.isOnCheck) this.isOnCheck = false;
-                    this.turn = (!(this.turn == 1))? 1:0;
-                    this.rotate();
+                    if (this.eval()) {
+                        this.isOnCheck = true;
+                        for (const p of foes) {
+                            p.isOnCheck = true;
+                        }
+                    }
+                    else if (this.isOnCheck) {
+                        this.isOnCheck = false;
+                        for (const p of foes) {
+                            p.isOnCheck = false;
+                        }
+                    }
+                    this.turn = (this.turn == 1)? 0:1;
+                    if (this.autoRotate) this.rotate();
                     break;
                 }
             }

@@ -2,7 +2,7 @@ class Piece {
     constructor(x, y, isWhite, idx, type) {
         this.coord = createVector(x, y);
         this.isWhite = isWhite;
-        this.enabled = true; //false if on check
+        this.isOnCheck = false;
         this.type = type;
         if (isWhite)
             this.img = Global.images.piece.white[idx];
@@ -15,15 +15,19 @@ class Piece {
     }
 
     getPossibleMoves(pieces) {
-        throw new Error('getPossibleMoves must be overriden');
+        throw new Error('getPossibleMoves() must be overriden');
     }
 
     getHashMoves(pieces) {
-        throw new Error('getHashMoves must be overriden');
+        throw new Error('getHashMoves() must be overriden');
     }
 
     createGhost(x, y, size) {
         return new GhostPiece(this.img, x, y, size);
+    }
+
+    clone () {
+        throw new Error('clone() must be overriden');
     }
 
     render(initX, initY, size) {
