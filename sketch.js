@@ -9,7 +9,6 @@ function setup() {
 function draw() {
     background(0);
     gm.render();
-    console.log('FPS:',Math.floor(frameRate()));
 }
 
 function mousePressed() {
