@@ -101,8 +101,8 @@ class Board extends BoardLite {
             const mouseVec = this.toCoord(mouseX, mouseY);
             for (const c of this.possibleMoves) {
                 if(mouseVec.equals(c)) {
-                    const foes = (this.turn==1)? this.blackPieces:this.whitePieces;
-                    const friends = (this.turn==0)? this.blackPieces:this.whitePieces;
+                    const pieces = {white: this.whitePieces, black: this.blackPieces};
+                    const {friends, foes} = Piece.getFriendsFoes(pieces, this.turn);
                     for (let i = 0; i < foes.length; i++) {
                         const p = foes[i];
                         if (p.coord.equals(mouseVec)) {
@@ -111,14 +111,16 @@ class Board extends BoardLite {
                         }
                     }
                     this.movingPiece.move(c.x, c.y);
-                    if (this.eval()) {
+                    if (this.eval(this.turn)) {
                         this.isOnCheck = true;
+                        console.log('Check');
                         for (const p of foes) {
                             p.isOnCheck = true;
                         }
                     }
                     else if (this.isOnCheck) {
                         this.isOnCheck = false;
+                        console.log('Not check');
                         for (const p of friends) {
                             p.isOnCheck = false;
                         }

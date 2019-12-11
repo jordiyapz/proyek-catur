@@ -63,27 +63,32 @@ class BoardLite {
         }
     }
 
-    eval () {
+    eval (isWhite) {
         const whiteKing = this.whitePieces.find(p => p.type == 'king');
         const blackKing = this.blackPieces.find(p => p.type == 'king');
-        const pieces = {white:this.whitePieces,black:this.blackPieces};
-        for (const p of this.blackPieces) {
-            const moves = (p.type == 'king')?
-                p.getHashMoves(pieces) : p.getPossibleMoves(pieces);
-            const captureMoves = p.getCaptureMoves(pieces, moves);
-            for (const c of captureMoves) {
-                if (c.equals(whiteKing.coord)) {
-                    return true;
+        const pieces = {white:this.whitePieces, black:this.blackPieces};
+        if (!isWhite) {
+            for (const p of this.whitePieces) {
+                // const moves = (p.type == 'king')?
+                //     p.getHashMoves(pieces) : p.getPossibleMoves(pieces);
+                const moves = p.getHashMoves(pieces);
+                const captureMoves = p.getCaptureMoves(pieces, moves);
+                for (const c of captureMoves) {
+                    if (c.equals(blackKing.coord)) {
+                        return true;
+                    }
                 }
             }
-        }
-        for (const p of this.whitePieces) {
-            const moves = (p.type == 'king')?
-                p.getHashMoves(pieces) : p.getPossibleMoves(pieces);
-            const captureMoves = p.getCaptureMoves(pieces, moves);
-            for (const c of captureMoves) {
-                if (c.equals(blackKing.coord)) {
-                    return true;
+        } else {
+            for (const p of this.blackPieces) {
+                // const moves = (p.type == 'king')?
+                //     p.getHashMoves(pieces) : p.getPossibleMoves(pieces);
+                const moves = p.getHashMoves(pieces);
+                const captureMoves = p.getCaptureMoves(pieces, moves);
+                for (const c of captureMoves) {
+                    if (c.equals(whiteKing.coord)) {
+                        return true;
+                    }
                 }
             }
         }

@@ -15,22 +15,20 @@ class Piece {
     }
 
     getPossibleMoves(pieces) {
-        let moves = this.getHashMoves(pieces);
-        if (!this.isOnCheck) return moves;
+        const moves = this.getHashMoves(pieces);
 
         for (let i = moves.length-1; i >= 0; i--) {
             const move = moves[i];
             const clone = new BoardLite (pieces);
             const that = this;
-            const piece = ((this.isWhite)?clone.whitePieces:clone.blackPieces).find(p => p.coord.equals(that.coord));
-
-            const foes = (this.isWhite)? clone.blackPieces:clone.whitePieces;
+            const {friends, foes} = Piece.getFriendsFoes({white: clone.whitePieces, black: clone.blackPieces}, that.isWhite);
+            const piece = friends.find(p => p.coord.equals(that.coord));
             const foeId = foes.findIndex(p => p.coord.equals(move));
             if (foeId >= 0) {
                 foes.splice(foeId, 1);
             }
             piece.move(move.x, move.y);
-            if (clone.eval()) {
+            if (clone.eval(this.isWhite)) {
                 moves.splice(i, 1);
             }
         }
@@ -60,6 +58,13 @@ class Piece {
 
     clone () {
         throw new Error('clone() must be overriden');
+    }
+
+    static getFriendsFoes (pieces, isWhite) {
+        if (isWhite) {
+            return {friends: pieces.white, foes: pieces.black};
+        }
+        return {friends: pieces.black, foes: pieces.white};
     }
 
     getFriendsFoes (pieces) {
