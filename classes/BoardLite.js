@@ -1,12 +1,8 @@
 class BoardLite {
     constructor(pieces) {
-        this.pos = createVector(Global.border, Global.border);
-        this.size = Global.tileSize;
         this.turn = 1; // 0 == black, 1 == white;
         this.isOnCheck = false;
-
-        this.whitePieces = [];
-        this.blackPieces = [];
+        this.pieces = {white:[], black:[]};
         this.setupPieces(pieces);
     }
 
@@ -17,10 +13,10 @@ class BoardLite {
     setupPieces(pieces) {
         if (pieces === undefined || pieces === null) {
             // for (let i = 0; i < 8; i++) {
-            //     this.blackPieces.push(new Pawn(i, 1, false));
-            //     this.whitePieces.push(new Pawn(i, 6, true));
+            //     this.pieces.black.push(new Pawn(i, 1, false));
+            //     this.pieces.white.push(new Pawn(i, 6, true));
             // }
-            this.blackPieces.push(
+            this.pieces.black.push(
                 new Rook(0, 0, false),
                 new Knight(1, 0, false),
                 new Bishop(2, 0, false),
@@ -30,7 +26,7 @@ class BoardLite {
                 new Knight(6, 0, false),
                 new Rook(7, 0, false)
             );
-            this.whitePieces.push(
+            this.pieces.white.push(
                 new Rook(0, 7, true),
                 new Knight(1, 7, true),
                 new Bishop(2, 7, true),
@@ -42,17 +38,16 @@ class BoardLite {
             );
         } else {
             for (const p of pieces.white) {
-                this.whitePieces.push(p.clone());
+                this.pieces.white.push(p.clone());
             }
             for (const p of pieces.black) {
-                this.blackPieces.push(p.clone());
+                this.pieces.black.push(p.clone());
             }
         }
     }
 
     rotate () {
-        const {whitePieces, blackPieces} = this;
-        for (const pieces of {whitePieces, blackPieces}) {
+        for (const pieces of this.pieces) {
             pieces.forEach(p => {
                 if (p.type == 'pawn') {
                     p.dir = (p.dir == 1)? 0:1;
@@ -64,32 +59,13 @@ class BoardLite {
     }
 
     eval (isWhite) {
-        const whiteKing = this.whitePieces.find(p => p.type == 'king');
-        const blackKing = this.blackPieces.find(p => p.type == 'king');
-        const pieces = {white:this.whitePieces, black:this.blackPieces};
-        if (!isWhite) {
-            for (const p of this.whitePieces) {
-                // const moves = (p.type == 'king')?
-                //     p.getHashMoves(pieces) : p.getPossibleMoves(pieces);
-                const moves = p.getHashMoves(pieces);
-                const captureMoves = p.getCaptureMoves(pieces, moves);
-                for (const c of captureMoves) {
-                    if (c.equals(blackKing.coord)) {
-                        return true;
-                    }
-                }
-            }
-        } else {
-            for (const p of this.blackPieces) {
-                // const moves = (p.type == 'king')?
-                //     p.getHashMoves(pieces) : p.getPossibleMoves(pieces);
-                const moves = p.getHashMoves(pieces);
-                const captureMoves = p.getCaptureMoves(pieces, moves);
-                for (const c of captureMoves) {
-                    if (c.equals(whiteKing.coord)) {
-                        return true;
-                    }
-                }
+        const {friends, foes} = Piece.getFriendsFoes(this.pieces, isWhite);
+        const king = friends.find(p => p.type == 'king');
+        for (const p of foes) {
+            const moves = p.getHashMoves(this.pieces);
+            const captureMoves = p.getCaptureMoves(this.pieces, moves);
+            for (const c of captureMoves) {
+                if (c.equals(king.coord)) return true;
             }
         }
         return false;

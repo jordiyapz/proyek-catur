@@ -21,7 +21,7 @@ class Piece {
             const move = moves[i];
             const clone = new BoardLite (pieces);
             const that = this;
-            const {friends, foes} = Piece.getFriendsFoes({white: clone.whitePieces, black: clone.blackPieces}, that.isWhite);
+            const {friends, foes} = Piece.getFriendsFoes(clone.pieces, that.isWhite);
             const piece = friends.find(p => p.coord.equals(that.coord));
             const foeId = foes.findIndex(p => p.coord.equals(move));
             if (foeId >= 0) {

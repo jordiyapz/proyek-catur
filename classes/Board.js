@@ -1,6 +1,11 @@
 class Board extends BoardLite {
     constructor(pieces) {
         super(pieces);
+        this.pos = createVector(Global.border, Global.border);
+        this.size = Global.tileSize;
+        this.styles = {
+            hint: 0
+        }
         this.autoRotate = false;
         this.movingPiece = null;
         this.possibleMoves = null;
@@ -25,12 +30,9 @@ class Board extends BoardLite {
     }
 
     getPiece(x, y) {
-        const pieces = this.whitePieces.copyWithin(0,0).concat(this.blackPieces);
+        const pieces = this.pieces.white.copyWithin(0,0).concat(this.pieces.black);
         for (const piece of pieces) {
-            const pos = {
-                x : piece.coord.x*this.size,
-                y : piece.coord.y*this.size
-            };
+            const pos = this.toPos(piece.coord);
             if (
                 x > pos.x && x < pos.x + this.size &&
                 y > pos.y && y < pos.y + this.size
@@ -41,36 +43,56 @@ class Board extends BoardLite {
 
     render () {
         noStroke();
+        fill(125, 135, 150);
+        rect(this.pos.x, this.pos.y, this.size*8, this.size*8);
+        fill(232, 235, 239);
         for(let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
                 if ((i+j) % 2 == 0)
-                    fill(232, 235, 239);
-                else fill(125, 135, 150);
-                rect(
-                    this.pos.x + j * this.size ,
-                    this.pos.y + i * this.size ,
-                    this.size , this.size
-                );
+                    rect(
+                        this.pos.x + j * this.size ,
+                        this.pos.y + i * this.size ,
+                        this.size , this.size
+                    );
             }
         }
-
-        if (this.possibleMoves) {
-            fill(0, 255, 0, 160);
-            for (const vec of this.possibleMoves) {
-                const pos = this.toPos(vec);
-                rect(pos.x, pos.y, this.size, this.size);
-            }
-            fill(255, 0, 0);
-            for (const vec of this.captureMoves) {
-                const pos = this.toPos(vec);
-                rect(pos.x, pos.y, this.size, this.size);
+        if (this.styles.hint == 0) {
+            if (this.possibleMoves) {
+                fill(0, 255, 0, 160);
+                for (const vec of this.possibleMoves) {
+                    const pos = this.toPos(vec);
+                    rect(pos.x, pos.y, this.size, this.size);
+                }
+                fill(255, 0, 0);
+                for (const vec of this.captureMoves) {
+                    const pos = this.toPos(vec);
+                    rect(pos.x, pos.y, this.size, this.size);
+                }
             }
         }
-        for (const p of this.whitePieces) {
+        for (const p of this.pieces.white) {
             p.render(this.pos.x, this.pos.y, this.size);
         }
-        for (const p of this.blackPieces) {
+        for (const p of this.pieces.black) {
             p.render(this.pos.x, this.pos.y, this.size);
+        }
+        if (this.styles.hint == 1) {
+            if (this.possibleMoves) {
+                strokeWeight(2);
+                fill(0, 255, 0, 160);
+                stroke(0, 180, 0, 160);
+                for (const vec of this.possibleMoves) {
+                    const pos = this.toPos(vec);
+                    ellipse(pos.x+this.size/2, pos.y+this.size/2, this.size*.2);
+                }
+                fill(255, 0, 0);
+                strokeWeight(3);
+                stroke(200, 0, 0);
+                for (const vec of this.captureMoves) {
+                    const pos = this.toPos(vec);
+                    ellipse(pos.x+this.size/2, pos.y+this.size/2, this.size*.25);
+                }
+            }
         }
         if (this.ghost) {
             this.ghost.render();
@@ -82,7 +104,7 @@ class Board extends BoardLite {
             this.movingPiece = this.getPiece(mouseX, mouseY);
             if (this.movingPiece) {
                 if (this.movingPiece.isWhite == (this.turn)) {
-                    const pieces = {white: this.whitePieces, black: this.blackPieces};
+                    const pieces = {white: this.pieces.white, black: this.pieces.black};
                     this.possibleMoves = this.movingPiece.getPossibleMoves(pieces);
                     this.captureMoves = this.movingPiece.getCaptureMoves(pieces, this.possibleMoves);
                     this.offset = this.size / 2;
@@ -101,7 +123,7 @@ class Board extends BoardLite {
             const mouseVec = this.toCoord(mouseX, mouseY);
             for (const c of this.possibleMoves) {
                 if(mouseVec.equals(c)) {
-                    const pieces = {white: this.whitePieces, black: this.blackPieces};
+                    const pieces = {white: this.pieces.white, black: this.pieces.black};
                     const {friends, foes} = Piece.getFriendsFoes(pieces, this.turn);
                     for (let i = 0; i < foes.length; i++) {
                         const p = foes[i];
