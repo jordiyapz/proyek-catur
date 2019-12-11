@@ -106,6 +106,7 @@ class Board extends BoardLite {
             for (const c of this.hashMoves) {
                 if(mouseVec.equals(c)) {
                     const foes = (this.turn==1)? this.blackPieces:this.whitePieces;
+                    const friends = (this.turn==0)? this.blackPieces:this.whitePieces;
                     for (let i = 0; i < foes.length; i++) {
                         const p = foes[i];
                         if (p.coord.equals(mouseVec)) {
@@ -122,7 +123,7 @@ class Board extends BoardLite {
                     }
                     else if (this.isOnCheck) {
                         this.isOnCheck = false;
-                        for (const p of foes) {
+                        for (const p of friends) {
                             p.isOnCheck = false;
                         }
                     }
