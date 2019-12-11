@@ -23,7 +23,6 @@ class Pawn extends Piece {
     getHashMoves(pieces) {
         const c = this.coord;
         const moves = [];
-        const captureMoves = [];
 
         let friends, foes;
         if (this.isWhite) {
@@ -49,7 +48,6 @@ class Pawn extends Piece {
                 if (first && vec.y == p.coord.y) {
                     if (vec.x + 1 == p.coord.x || vec.x - 1 == p.coord.x) {
                         moves.push(p.coord.copy());
-                        captureMoves.push(p.coord.copy());
                     } else if (vec.x == p.coord.x) {
                         stop = true;
                     }
@@ -67,6 +65,6 @@ class Pawn extends Piece {
             moves.push(vec.copy());
             first = false;
         }
-        return {moves, captureMoves};
+        return moves;
     }
 }

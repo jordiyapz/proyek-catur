@@ -15,15 +15,8 @@ class Piece {
     }
 
     getPossibleMoves(pieces) {
-        let {moves, captureMoves} = this.getHashMoves(pieces);
-        if (!this.isOnCheck) return {moves, captureMoves};
-        captureMoves = [];
-        let foes = null;
-        if (this.isWhite) {
-            foes = pieces.black;
-        } else {
-            foes = pieces.white;
-        }
+        let moves = this.getHashMoves(pieces);
+        if (!this.isOnCheck) return moves;
 
         for (let i = moves.length-1; i >= 0; i--) {
             const move = moves[i];
@@ -41,6 +34,16 @@ class Piece {
                 moves.splice(i, 1);
             }
         }
+        return moves;
+    }
+
+    getHashMoves(pieces) {
+        throw new Error('getHashMoves() must be overriden');
+    }
+
+    getCaptureMoves(pieces, moves) {
+        const captureMoves = [];
+        const foes = this.getFriendsFoes(pieces).foes;
         for (const move of moves) {
             for (const p of foes) {
                 if (move.equals(p.coord)) {
@@ -48,11 +51,7 @@ class Piece {
                 }
             }
         }
-        return {moves, captureMoves};
-    }
-
-    getHashMoves(pieces) {
-        throw new Error('getHashMoves() must be overriden');
+        return captureMoves;
     }
 
     createGhost(x, y, size) {
@@ -61,6 +60,13 @@ class Piece {
 
     clone () {
         throw new Error('clone() must be overriden');
+    }
+
+    getFriendsFoes (pieces) {
+        if (this.isWhite) {
+            return {friends: pieces.white, foes: pieces.black};
+        }
+        return {friends: pieces.black, foes: pieces.white};
     }
 
     render(initX, initY, size) {

@@ -4,7 +4,6 @@ class Board extends BoardLite {
         this.autoRotate = false;
         this.movingPiece = null;
         this.possibleMoves = null;
-        this.hashMoves = null;
         this.captureMoves = null;
         this.offset = null;
         this.ghost = null;
@@ -57,7 +56,7 @@ class Board extends BoardLite {
 
         if (this.possibleMoves) {
             fill(0, 255, 0, 160);
-            for (const vec of this.hashMoves) {
+            for (const vec of this.possibleMoves) {
                 const pos = this.toPos(vec);
                 rect(pos.x, pos.y, this.size, this.size);
             }
@@ -83,12 +82,9 @@ class Board extends BoardLite {
             this.movingPiece = this.getPiece(mouseX, mouseY);
             if (this.movingPiece) {
                 if (this.movingPiece.isWhite == (this.turn)) {
-                    this.possibleMoves = this.movingPiece.getPossibleMoves({
-                        white: this.whitePieces,
-                        black: this.blackPieces
-                    });
-                    this.hashMoves = this.possibleMoves.moves;
-                    this.captureMoves = this.possibleMoves.captureMoves;
+                    const pieces = {white: this.whitePieces, black: this.blackPieces};
+                    this.possibleMoves = this.movingPiece.getPossibleMoves(pieces);
+                    this.captureMoves = this.movingPiece.getCaptureMoves(pieces, this.possibleMoves);
                     this.offset = this.size / 2;
                     this.ghost = this.movingPiece.createGhost(mouseX-this.offset, mouseY-this.offset, this.size);
                     this.dragging = true;
@@ -103,7 +99,7 @@ class Board extends BoardLite {
         this.dragging = false;
         if (this.movingPiece) {
             const mouseVec = this.toCoord(mouseX, mouseY);
-            for (const c of this.hashMoves) {
+            for (const c of this.possibleMoves) {
                 if(mouseVec.equals(c)) {
                     const foes = (this.turn==1)? this.blackPieces:this.whitePieces;
                     const friends = (this.turn==0)? this.blackPieces:this.whitePieces;

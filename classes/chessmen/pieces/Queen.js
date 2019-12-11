@@ -11,7 +11,6 @@ class Queen extends Piece {
     getHashMoves(pieces) {
         const c = this.coord;
         const moves = [];
-        const captureMoves = [];
 
         let friends, foes;
         if (this.isWhite) {
@@ -36,7 +35,6 @@ class Queen extends Piece {
             for (const p of foes) {
                 if (vec.equals(p.coord)) {
                     stop = true;
-                    captureMoves.push(vec.copy());
                     moves.push(vec.copy());
                     break;
                 }
@@ -57,7 +55,6 @@ class Queen extends Piece {
             for (const p of foes) {
                 if (vec.equals(p.coord)) {
                     stop = true;
-                    captureMoves.push(vec.copy());
                     moves.push(vec.copy());
                     break;
                 }
@@ -78,7 +75,6 @@ class Queen extends Piece {
             for (const p of foes) {
                 if (vec.equals(p.coord)) {
                     stop = true;
-                    captureMoves.push(vec.copy());
                     moves.push(vec.copy());
                     break;
                 }
@@ -99,7 +95,6 @@ class Queen extends Piece {
             for (const p of foes) {
                 if (vec.equals(p.coord)) {
                     stop = true;
-                    captureMoves.push(vec.copy());
                     moves.push(vec.copy());
                     break;
                 }
@@ -122,7 +117,6 @@ class Queen extends Piece {
             for (const p of foes) {
                 if (vec.equals(p.coord)) {
                     stop = true;
-                    captureMoves.push(vec.copy());
                     moves.push(vec.copy());
                     break;
                 }
@@ -144,7 +138,6 @@ class Queen extends Piece {
             for (const p of foes) {
                 if (vec.equals(p.coord)) {
                     stop = true;
-                    captureMoves.push(vec.copy());
                     moves.push(vec.copy());
                     break;
                 }
@@ -166,7 +159,6 @@ class Queen extends Piece {
             for (const p of foes) {
                 if (vec.equals(p.coord)) {
                     stop = true;
-                    captureMoves.push(vec.copy());
                     moves.push(vec.copy());
                     break;
                 }
@@ -188,7 +180,6 @@ class Queen extends Piece {
             for (const p of foes) {
                 if (vec.equals(p.coord)) {
                     stop = true;
-                    captureMoves.push(vec.copy());
                     moves.push(vec.copy());
                     break;
                 }
@@ -196,6 +187,6 @@ class Queen extends Piece {
             if (stop) break;
             moves.push(vec.copy());
         }
-        return {moves, captureMoves};
+        return moves;
     }
 }

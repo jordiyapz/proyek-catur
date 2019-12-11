@@ -16,7 +16,6 @@ class Rook extends Piece {
 
     getHashMoves(pieces) {
         const moves = [];
-        const captureMoves = [];
         const c = this.coord;
 
         let friends, foes;
@@ -41,7 +40,6 @@ class Rook extends Piece {
             for (const p of foes) {
                 if (vec.equals(p.coord)) {
                     stop = true;
-                    captureMoves.push(vec.copy());
                     moves.push(vec.copy());
                     break;
                 }
@@ -63,7 +61,6 @@ class Rook extends Piece {
             for (const p of foes) {
                 if (vec.equals(p.coord)) {
                     stop = true;
-                    captureMoves.push(vec.copy());
                     moves.push(vec.copy());
                     break;
                 }
@@ -85,7 +82,6 @@ class Rook extends Piece {
             for (const p of foes) {
                 if (vec.equals(p.coord)) {
                     stop = true;
-                    captureMoves.push(vec.copy());
                     moves.push(vec.copy());
                     break;
                 }
@@ -107,7 +103,6 @@ class Rook extends Piece {
             for (const p of foes) {
                 if (vec.equals(p.coord)) {
                     stop = true;
-                    captureMoves.push(vec.copy());
                     moves.push(vec.copy());
                     break;
                 }
@@ -115,7 +110,6 @@ class Rook extends Piece {
             if (stop) break;
             moves.push(vec.copy());
         }
-
-        return {moves, captureMoves};
+        return moves;
     }
 }

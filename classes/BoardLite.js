@@ -68,12 +68,9 @@ class BoardLite {
         const blackKing = this.blackPieces.find(p => p.type == 'king');
         const pieces = {white:this.whitePieces,black:this.blackPieces};
         for (const p of this.blackPieces) {
-            let captureMoves = null;
-            if (p.type == 'king') {
-                captureMoves = p.getHashMoves(pieces).captureMoves;
-            } else {
-                captureMoves = p.getPossibleMoves(pieces).captureMoves;
-            }
+            const moves = (p.type == 'king')?
+                p.getHashMoves(pieces) : p.getPossibleMoves(pieces);
+            const captureMoves = p.getCaptureMoves(pieces, moves);
             for (const c of captureMoves) {
                 if (c.equals(whiteKing.coord)) {
                     return true;
@@ -81,12 +78,9 @@ class BoardLite {
             }
         }
         for (const p of this.whitePieces) {
-            let captureMoves = null;
-            if (p.type == 'king') {
-                captureMoves = p.getHashMoves(pieces).captureMoves;
-            } else {
-                captureMoves = p.getPossibleMoves(pieces).captureMoves;
-            }
+            const moves = (p.type == 'king')?
+                p.getHashMoves(pieces) : p.getPossibleMoves(pieces);
+            const captureMoves = p.getCaptureMoves(pieces, moves);
             for (const c of captureMoves) {
                 if (c.equals(blackKing.coord)) {
                     return true;

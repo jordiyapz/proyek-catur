@@ -11,7 +11,6 @@ class Knight extends Piece {
     getHashMoves(pieces) {
         const c = this.coord;
         const moves = [];
-        const captureMoves = [];
 
         let friends, foes;
         if (this.isWhite) {
@@ -38,7 +37,6 @@ class Knight extends Piece {
                         for(const p of foes) {
                             if (vec.equals(p.coord)) {
                                 skip = true;
-                                captureMoves.push(vec.copy());
                                 break;
                             }
                         }
@@ -47,6 +45,6 @@ class Knight extends Piece {
                 }
             }
         }
-        return {moves, captureMoves};
+        return moves;
     }
 }
