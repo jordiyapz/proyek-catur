@@ -3,6 +3,7 @@ class King extends Piece {
         super(x, y, isWhite, 5, 'king');
         this.castlingable = true;
         this.castableRooks = [];
+        this.isOnCheck = false;
     }
 
     clone() {
@@ -14,19 +15,17 @@ class King extends Piece {
         if (this.castlingable) {
             const c = this.coord;
             if (Math.abs(x - c.x) == 2) {
-                const vec = createVector(x, y);
                 const fac = (x < c.x)? -1:1;
                 for (const rook of this.castableRooks) {
-                    console.log(rook);
-                    if (x*fac < rook.coord.x*fac)
+                    if (cast && x*fac < rook.coord.x*fac) {
                         rook.move(x-fac, y);
-                    rook.castlingable = false;
+                    }
                 }
             }
         }
         this.coord.set(x, y);
         this.castlingable = false;
-        this.castableRooks = [];
+        this.castableRooks = null;
     }
 
     getHashMoves(pieces) {

@@ -133,18 +133,24 @@ class Board extends BoardLite {
                         }
                     }
                     this.movingPiece.move(c.x, c.y);
-                    if (this.eval(this.turn)) {
+                    if (this.eval(this.turn==0)) {
                         this.isOnCheck = true;
                         console.log('Check');
                         for (const p of foes) {
-                            p.isOnCheck = true;
+                            if (p.type == 'king') {
+                                p.isOnCheck = true;
+                                break;
+                            }
                         }
                     }
                     else if (this.isOnCheck) {
                         this.isOnCheck = false;
                         console.log('Not check');
                         for (const p of friends) {
-                            p.isOnCheck = false;
+                            if (p.type == 'king') {
+                                p.isOnCheck = false;
+                                break;
+                            }
                         }
                     }
                     this.turn = (this.turn == 1)? 0:1;

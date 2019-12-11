@@ -2,7 +2,6 @@ class Piece {
     constructor(x, y, isWhite, idx, type) {
         this.coord = createVector(x, y);
         this.isWhite = isWhite;
-        this.isOnCheck = false;
         this.type = type;
         if (isWhite)
             this.img = Global.images.piece.white[idx];
