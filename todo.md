@@ -1,14 +1,16 @@
 # TO-DO
 ## Mekanisme Game
-* Tambahkan Check dan Checkmate
-* Perbaiki gerakan King
-* Tambahkan Castling, En Passant, Pawn Promotion
-* Putar papan (done)
+[x] Putar papan
+[x] Tambahkan Check dan Checkmate
+[x] Perbaiki gerakan King
+[x] Tambahkan Castling
+[x] Pawn Promotion
+[ ] En Passant
 ## Tampilan Game
-* Halaman depan
-* Halaman loading
-* Halaman Game: Board, Timer, Turn
+[ ] Halaman depan
+[ ] Halaman loading
+[ ] Halaman Game: Board, Timer, Turn
 ## Fitur
-* Two player single page
-* Two player online
-* Single player
+[ ] Two player single page
+[ ] Two player online
+[ ] Single player

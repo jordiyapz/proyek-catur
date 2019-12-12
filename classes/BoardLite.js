@@ -12,10 +12,10 @@ class BoardLite {
      */
     setupPieces(pieces) {
         if (pieces === undefined || pieces === null) {
-            // for (let i = 0; i < 8; i++) {
-            //     this.pieces.black.push(new Pawn(i, 1, false));
-            //     this.pieces.white.push(new Pawn(i, 6, true));
-            // }
+            for (let i = 0; i < 8; i++) {
+                this.pieces.black.push(new Pawn(i, 1, false));
+                this.pieces.white.push(new Pawn(i, 6, true));
+            }
             this.pieces.black.push(
                 new Rook(0, 0, false),
                 new Knight(1, 0, false),
