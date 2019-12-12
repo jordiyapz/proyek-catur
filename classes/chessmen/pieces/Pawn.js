@@ -27,14 +27,7 @@ class Pawn extends Piece {
         const c = this.coord;
         const moves = [];
 
-        let friends, foes;
-        if (this.isWhite) {
-            friends = pieces.white;
-            foes = pieces.black;
-        } else {
-            friends = pieces.black;
-            foes = pieces.white;
-        }
+        let {friends, foes} = this.getFriendsFoes(pieces);
 
         const mv = 2*this.dir-1;
         let vec = createVector(c.x, c.y).add(0, mv);
@@ -48,8 +41,8 @@ class Pawn extends Piece {
                 !this.dir && vec.y < 0
             ) break;
             for (const p of foes) {
-                if (first && vec.y == p.coord.y) {
-                    if (vec.x + 1 == p.coord.x || vec.x - 1 == p.coord.x) {
+                if (vec.y == p.coord.y) {
+                    if (first && (vec.x + 1 == p.coord.x || vec.x - 1 == p.coord.x)) {
                         moves.push(p.coord.copy());
                     } else if (vec.x == p.coord.x) {
                         stop = true;
@@ -69,5 +62,18 @@ class Pawn extends Piece {
             first = false;
         }
         return moves;
+    }
+    getCaptureMoves(pieces, moves) {
+        const captureMoves = [];
+        const foes = this.getFriendsFoes(pieces).foes;
+        for (const move of moves) {
+            if (move.x != this.coord.x)
+                for (const p of foes) {
+                    if (move.equals(p.coord)) {
+                        captureMoves.push(move.copy());
+                    }
+                }
+        }
+        return captureMoves;
     }
 }
