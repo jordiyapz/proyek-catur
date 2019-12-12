@@ -13,12 +13,20 @@ function draw() {
 
 function mousePressed() {
     gm.onMousePressed();
+    return false;
 }
 
 function mouseReleased() {
     gm.onMouseReleased();
+    return false;
 }
 
 function mouseDragged() {
     gm.onMouseDragged();
+    return false;
+}
+
+function mouseMoved() {
+    gm.onMouseMoved();
+    return false;
 }

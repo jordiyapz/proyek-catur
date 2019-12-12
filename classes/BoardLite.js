@@ -70,4 +70,26 @@ class BoardLite {
         }
         return false;
     }
+
+    /**
+     * Method for pawn promotion
+     * @param {Array} pawnArr Array where the pawn is located at
+     * @param {Number} pawnId Index of the Pawn in that array
+     * @param {Number} promotionIndex 0:Queen, 1:Bishop, 2:Knight, 3:Rook
+     */
+    promotePawn(pawnArr, pawnId, promotionIndex) {
+        const {coord, isWhite} = pawnArr[pawnId];
+        const {x, y} = coord;
+        const getNewPiece = () => {
+            switch (promotionIndex) {
+                case 0: return new Queen(x, y, isWhite);
+                case 1: return new Bishop(x, y, isWhite);
+                case 2: return new Knight(x, y, isWhite);
+                case 3: return new Rook(x, y, isWhite);
+                default: throw new Error('Promotion Index doesn\'t exist');
+            }
+        }
+        pawnArr.splice(pawnId, 1);
+        pawnArr.push(getNewPiece());
+    }
 }

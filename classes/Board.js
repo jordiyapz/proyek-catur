@@ -2,21 +2,24 @@ class Board extends BoardLite {
     constructor(x, y, tileSize, border=5) {
         super();
         this.pos = createVector(x+border, y+border);
-        this.size = tileSize;
+        this.tileSize = tileSize;
         this.border = border;
         this.styles = { hint: 0 };
         this.autoRotate = false;
+        this.stash = {};
         this.movingPiece = null;
         this.possibleMoves = null;
         this.captureMoves = null;
         this.offset = null;
         this.ghost = null;
         this.dragging = null;
+        this.state = 0;
+        this.setupProperty();
     }
 
     toPos(coord) {
         const pos = createVector(coord.x, coord.y)
-            .mult(this.size)
+            .mult(this.tileSize)
             .add(createVector(this.pos.x, this.pos.y));
         return pos;
     }
@@ -24,7 +27,7 @@ class Board extends BoardLite {
         if (posy) pos = createVector(pos, posy);
         const coord = createVector(pos.x, pos.y)
             .sub(createVector(this.pos.x, this.pos.y))
-            .div(this.size);
+            .div(this.tileSize);
         return coord.set(Math.floor(coord.x), Math.floor(coord.y));
     }
 
@@ -33,51 +36,103 @@ class Board extends BoardLite {
         for (const piece of pieces) {
             const pos = this.toPos(piece.coord);
             if (
-                x > pos.x && x < pos.x + this.size &&
-                y > pos.y && y < pos.y + this.size
+                x > pos.x && x < pos.x + this.tileSize &&
+                y > pos.y && y < pos.y + this.tileSize
             ) return piece;
         }
         return null;
     }
 
+    setupProperty () {
+        const {tileSize} = this;
+        const size = tileSize*8;
+        const box = {
+            pos: null,
+            width: size*.74,
+            height: size*.32,
+            padding: null,
+            border: null,
+            promoteBtn: {white:[], black:[]}
+        };
+        box.pos = createVector (this.pos.x + (size-box.width)/2, this.pos.y + (size-box.height)*.6);
+        box.padding = createVector ((box.width - (box.width*.05*3 + tileSize*4))/2, box.height*.05);
+        box.border = box.width*.01;
+        const img = Global.images.piece;
+        const pieceNames = ['Queen', 'Bishop', 'Knight', 'Rook'];
+
+        for (let i = 0; i < 4; i++) {
+            const btnPos = createVector(
+                box.pos.x + box.padding.x + (box.width*.05 + tileSize)*i,
+                box.pos.y + box.height*.4
+            )
+            const btn = [null, null];
+            for (let j = 0; j < 2; j++) {
+                btn[j] = new Button(pieceNames[i], btnPos.x,btnPos.y, tileSize)
+                    .setImage((j==1)? img.white[4-i]:img.black[4-i]);
+                btn[j].onMouseOver = () => {
+                    btn[j].dim.width = btn[j].dim.height = tileSize * 1.1;
+                    btn[j].pos.x = btnPos.x - 2;
+                    btn[j].pos.y = btnPos.y - 2;
+                };
+                btn[j].onMouseOut = () => {
+                    btn[j].dim.width = btn[j].dim.height = tileSize;
+                    btn[j].pos.x = btnPos.x;
+                    btn[j].pos.y = btnPos.y;
+                }
+            }
+            box.promoteBtn.black.push(btn[0]);
+            box.promoteBtn.white.push(btn[1]);
+        }
+
+        this.property = {promotionBox: box};
+    }
+
     render () {
-        const {pos, border, size} = this;
+        const {pos, border, tileSize} = this;
+        const size = tileSize*8;
+
+        /** Those fancy board starts here */
         noStroke();
         fill(0);
-        rect(pos.x-border, pos.y-border, size*8+2*border, size*8+2*border);
+        rect(pos.x-border, pos.y-border, tileSize*8+2*border, tileSize*8+2*border);
         fill(125, 135, 150);
-        rect(pos.x, pos.y, size*8, size*8);
+        rect(pos.x, pos.y, tileSize*8, tileSize*8);
         fill(232, 235, 239);
         for(let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
                 if ((i+j) % 2 == 0)
                     rect(
-                        pos.x + j * size ,
-                        pos.y + i * size ,
-                        size , size
+                        pos.x + j * tileSize ,
+                        pos.y + i * tileSize ,
+                        tileSize , tileSize
                     );
             }
         }
+
+        /** Default isn't that boring thou */
         if (this.styles.hint == 0) {
             if (this.possibleMoves) {
                 fill(0, 255, 0, 160);
                 for (const vec of this.possibleMoves) {
                     const pos = this.toPos(vec);
-                    rect(pos.x, pos.y, size, size);
+                    rect(pos.x, pos.y, tileSize, tileSize);
                 }
                 fill(255, 0, 0);
                 for (const vec of this.captureMoves) {
                     const pos = this.toPos(vec);
-                    rect(pos.x, pos.y, size, size);
+                    rect(pos.x, pos.y, tileSize, tileSize);
                 }
             }
         }
-        for (const p of this.pieces.white) {
-            p.render(pos.x, pos.y, size);
+
+        /** Those are not piece of cakes! They are the chessmen themselves */
+        for (const key in this.pieces) {
+            for (const p of this.pieces[key]) {
+                p.render(pos.x, pos.y, tileSize);
+            }
         }
-        for (const p of this.pieces.black) {
-            p.render(pos.x, pos.y, size);
-        }
+
+        /** Style does matter, isn't? */
         if (this.styles.hint == 1) {
             if (this.possibleMoves) {
                 strokeWeight(2);
@@ -85,84 +140,169 @@ class Board extends BoardLite {
                 stroke(0, 180, 0, 160);
                 for (const vec of this.possibleMoves) {
                     const pos = this.toPos(vec);
-                    ellipse(pos.x+size/2, pos.y+size/2, size*.2);
+                    ellipse(pos.x+tileSize/2, pos.y+tileSize/2, tileSize*.2);
                 }
                 fill(255, 0, 0);
                 strokeWeight(3);
                 stroke(200, 0, 0);
                 for (const vec of this.captureMoves) {
                     const pos = this.toPos(vec);
-                    ellipse(pos.x+size/2, pos.y+size/2, size*.25);
+                    ellipse(pos.x+tileSize/2, pos.y+tileSize/2, tileSize*.25);
                 }
             }
         }
-        if (this.ghost) {
-            this.ghost.render();
+
+        /** If there is ghost, render it! */
+        if (this.ghost) this.ghost.render();
+
+        /** Chuckhaeyyo! You've got the promotion! */
+        if (this.state == 1 /* PAWN PROMOTION */) {
+            push();
+            const box = this.property.promotionBox;
+            const {pos, width, height, border, padding, promoteBtn} = box;
+            stroke(0);
+            strokeWeight(border);
+            strokeJoin(ROUND);
+            fill (240);
+            rect (pos.x, pos.y, width, height);
+            textAlign(CENTER, TOP);
+            noStroke();
+            fill(0);
+            textSize(size*.07);
+            text ('Promote to', pos.x+width/2, pos.y+padding.y);
+            const {pawn} = this.stash;
+            const btns = (pawn.isWhite)? promoteBtn.white:promoteBtn.black;
+            for (const btn of btns) btn.render();
+            pop();
         }
     }
 
+    onMouseMoved () {
+        switch (this.state) {
+            case 1:
+                const {promoteBtn} = this.property.promotionBox;
+                for (const btn of promoteBtn.white) btn.listenHover();
+                break;
+        }
+    }
     onMousePressed () {
-        if (!this.dragging) {
-            this.movingPiece = this.getPiece(mouseX, mouseY);
-            if (this.movingPiece) {
-                if (this.movingPiece.isWhite == (this.turn)) {
-                    const pieces = {white: this.pieces.white, black: this.pieces.black};
-                    this.possibleMoves = this.movingPiece.getPossibleMoves(pieces);
-                    this.captureMoves = this.movingPiece.getCaptureMoves(pieces, this.possibleMoves);
-                    this.offset = this.size / 2;
-                    this.ghost = this.movingPiece.createGhost(mouseX-this.offset, mouseY-this.offset, this.size);
-                    this.dragging = true;
-                } else this.movingPiece = null;
-            }
+        switch (this.state) {
+            case 0:
+                if (!this.dragging) {
+                    this.movingPiece = this.getPiece(mouseX, mouseY);
+                    if (this.movingPiece) {
+                        if (this.movingPiece.isWhite == (this.turn)) {
+                            const pieces = {white: this.pieces.white, black: this.pieces.black};
+                            this.possibleMoves = this.movingPiece.getPossibleMoves(pieces);
+                            this.captureMoves = this.movingPiece.getCaptureMoves(pieces, this.possibleMoves);
+                            this.offset = this.tileSize / 2;
+                            this.ghost = this.movingPiece.createGhost(mouseX-this.offset, mouseY-this.offset, this.tileSize);
+                            this.dragging = true;
+                        } else this.movingPiece = null;
+                    }
+                } break;
+            case 1:
+                const {promoteBtn} = this.property.promotionBox;
+                const btnArr = (this.turn == 1)? promoteBtn.white:promoteBtn.black;
+                for (let i = 0; i < btnArr.length; i++) {
+                    const btn = btnArr[i];
+                    if (btn.isClicked()) {
+                        const {pieces} = this;
+                        const {friends, foes} = Piece.getFriendsFoes(pieces, this.turn);
+                        const {pawn} = this.stash;
+                        const pawnIdx = friends.findIndex(p => p.coord.equals(pawn.coord));
+                        this.promotePawn(friends, pawnIdx, i);
+                        delete this.stash.pawn;
+                        if (this.eval(this.turn==0)) {
+                            this.isOnCheck = true;
+                            for (const p of foes) {
+                                if (p.type == 'king') {
+                                    p.isOnCheck = true;
+                                    break;
+                                }
+                            }
+                        }
+                        else if (this.isOnCheck) {
+                            this.isOnCheck = false;
+                            for (const p of friends) {
+                                if (p.type == 'king') {
+                                    p.isOnCheck = false;
+                                    break;
+                                }
+                            }
+                        }
+                        this.turn = (this.turn == 1)? 0:1;
+                        if (this.autoRotate) this.rotate();
+                        this.state = 0;
+                        break;
+                    }
+                }
+                break;
         }
     }
     onMouseDragged() {
-        if (this.ghost) this.ghost.pos.set(mouseX-this.offset, mouseY-this.offset);
+        switch (this.state) {
+            case 0:
+                if (this.ghost) this.ghost.pos.set(
+                    mouseX-this.offset, mouseY-this.offset
+                );
+                break;
+        }
     }
     onMouseReleased() {
-        this.dragging = false;
-        if (this.movingPiece) {
-            const mouseVec = this.toCoord(mouseX, mouseY);
-            for (const c of this.possibleMoves) {
-                if(mouseVec.equals(c)) {
-                    const pieces = {white: this.pieces.white, black: this.pieces.black};
-                    const {friends, foes} = Piece.getFriendsFoes(pieces, this.turn);
-                    for (let i = 0; i < foes.length; i++) {
-                        const p = foes[i];
-                        if (p.coord.equals(mouseVec)) {
-                            foes.splice(i, 1);
+        switch (this.state) {
+            case 0:
+                this.dragging = false;
+                if (this.movingPiece) {
+                    const mouseVec = this.toCoord(mouseX, mouseY);
+                    for (const c of this.possibleMoves) {
+                        if(mouseVec.equals(c)) {
+                            const {pieces} = this;
+                            const {friends, foes} = Piece.getFriendsFoes(pieces, this.turn);
+                            for (let i = 0; i < foes.length; i++) {
+                                const p = foes[i];
+                                if (p.coord.equals(mouseVec)) {
+                                    foes.splice(i, 1);
+                                    break;
+                                }
+                            }
+                            const flag = this.movingPiece.move(c.x, c.y);
+                            if (flag == 'PAWN PROMOTION') {
+                                const pawn = this.movingPiece;
+                                this.stash.friends = (pawn.isWhite)? pieces.white:pieces.black;
+                                this.stash.pawn = pawn;
+                                this.state = 1;
+                                break;
+                            }
+                            if (this.eval(this.turn==0)) {
+                                this.isOnCheck = true;
+                                for (const p of foes) {
+                                    if (p.type == 'king') {
+                                        p.isOnCheck = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            else if (this.isOnCheck) {
+                                this.isOnCheck = false;
+                                for (const p of friends) {
+                                    if (p.type == 'king') {
+                                        p.isOnCheck = false;
+                                        break;
+                                    }
+                                }
+                            }
+                            this.turn = (this.turn == 1)? 0:1;
+                            if (this.autoRotate) this.rotate();
                             break;
                         }
                     }
-                    this.movingPiece.move(c.x, c.y);
-                    if (this.eval(this.turn==0)) {
-                        this.isOnCheck = true;
-                        console.log('Check');
-                        for (const p of foes) {
-                            if (p.type == 'king') {
-                                p.isOnCheck = true;
-                                break;
-                            }
-                        }
-                    }
-                    else if (this.isOnCheck) {
-                        this.isOnCheck = false;
-                        console.log('Not check');
-                        for (const p of friends) {
-                            if (p.type == 'king') {
-                                p.isOnCheck = false;
-                                break;
-                            }
-                        }
-                    }
-                    this.turn = (this.turn == 1)? 0:1;
-                    if (this.autoRotate) this.rotate();
-                    break;
+
+                    this.movingPiece = null;
+                    this.possibleMoves = null;
+                    this.ghost = null;
                 }
-            }
-            this.movingPiece = null;
-            this.possibleMoves = null;
-            this.ghost = null;
+                break;
         }
     }
 }

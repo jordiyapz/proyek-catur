@@ -15,4 +15,7 @@ class GameModule {
     onMouseDragged() {
         this.board.onMouseDragged();
     }
+    onMouseMoved() {
+        this.board.onMouseMoved();
+    }
 }

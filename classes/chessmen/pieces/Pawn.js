@@ -18,6 +18,9 @@ class Pawn extends Piece {
             this.started = true;
             this.enPassantable = true;
         }
+        if (this.dir*7 == this.coord.y) {
+            return 'PAWN PROMOTION';
+        }
     }
 
     getHashMoves(pieces) {
