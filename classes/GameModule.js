@@ -1,6 +1,7 @@
 class GameModule {
     constructor() {
-        this.board = new Board();
+        const {border, tileSize} = Global;
+        this.board = new Board(0, 0, tileSize, border);
     }
     render() {
         this.board.render();

@@ -17,7 +17,7 @@ class King extends Piece {
             if (Math.abs(x - c.x) == 2) {
                 const fac = (x < c.x)? -1:1;
                 for (const rook of this.castableRooks) {
-                    if (cast && x*fac < rook.coord.x*fac) {
+                    if (x*fac < rook.coord.x*fac) {
                         rook.move(x-fac, y);
                     }
                 }

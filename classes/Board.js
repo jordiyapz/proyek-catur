@@ -1,11 +1,10 @@
 class Board extends BoardLite {
-    constructor(pieces) {
-        super(pieces);
-        this.pos = createVector(Global.border, Global.border);
-        this.size = Global.tileSize;
-        this.styles = {
-            hint: 0
-        }
+    constructor(x, y, tileSize, border=5) {
+        super();
+        this.pos = createVector(x+border, y+border);
+        this.size = tileSize;
+        this.border = border;
+        this.styles = { hint: 0 };
         this.autoRotate = false;
         this.movingPiece = null;
         this.possibleMoves = null;
@@ -42,17 +41,20 @@ class Board extends BoardLite {
     }
 
     render () {
+        const {pos, border, size} = this;
         noStroke();
+        fill(0);
+        rect(pos.x-border, pos.y-border, size*8+2*border, size*8+2*border);
         fill(125, 135, 150);
-        rect(this.pos.x, this.pos.y, this.size*8, this.size*8);
+        rect(pos.x, pos.y, size*8, size*8);
         fill(232, 235, 239);
         for(let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
                 if ((i+j) % 2 == 0)
                     rect(
-                        this.pos.x + j * this.size ,
-                        this.pos.y + i * this.size ,
-                        this.size , this.size
+                        pos.x + j * size ,
+                        pos.y + i * size ,
+                        size , size
                     );
             }
         }
@@ -61,20 +63,20 @@ class Board extends BoardLite {
                 fill(0, 255, 0, 160);
                 for (const vec of this.possibleMoves) {
                     const pos = this.toPos(vec);
-                    rect(pos.x, pos.y, this.size, this.size);
+                    rect(pos.x, pos.y, size, size);
                 }
                 fill(255, 0, 0);
                 for (const vec of this.captureMoves) {
                     const pos = this.toPos(vec);
-                    rect(pos.x, pos.y, this.size, this.size);
+                    rect(pos.x, pos.y, size, size);
                 }
             }
         }
         for (const p of this.pieces.white) {
-            p.render(this.pos.x, this.pos.y, this.size);
+            p.render(pos.x, pos.y, size);
         }
         for (const p of this.pieces.black) {
-            p.render(this.pos.x, this.pos.y, this.size);
+            p.render(pos.x, pos.y, size);
         }
         if (this.styles.hint == 1) {
             if (this.possibleMoves) {
@@ -83,14 +85,14 @@ class Board extends BoardLite {
                 stroke(0, 180, 0, 160);
                 for (const vec of this.possibleMoves) {
                     const pos = this.toPos(vec);
-                    ellipse(pos.x+this.size/2, pos.y+this.size/2, this.size*.2);
+                    ellipse(pos.x+size/2, pos.y+size/2, size*.2);
                 }
                 fill(255, 0, 0);
                 strokeWeight(3);
                 stroke(200, 0, 0);
                 for (const vec of this.captureMoves) {
                     const pos = this.toPos(vec);
-                    ellipse(pos.x+this.size/2, pos.y+this.size/2, this.size*.25);
+                    ellipse(pos.x+size/2, pos.y+size/2, size*.25);
                 }
             }
         }
