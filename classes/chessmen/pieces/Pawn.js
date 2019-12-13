@@ -5,6 +5,7 @@ class Pawn extends Piece {
         else this.dir = 0; // UP == 0
         this.started = false;
         this.enPassantable = false;
+        this.cache = {enPassantMoves: []};
     }
 
     clone() {
@@ -20,6 +21,12 @@ class Pawn extends Piece {
         }
         if (this.dir*7 == this.coord.y) {
             return 'PAWN PROMOTION';
+        }
+        const {enPassantMoves} = this.cache;
+        for (const m of enPassantMoves) {
+            if (x == m.x && y == m.y) {
+                return 'ENPASSANT';
+            }
         }
     }
 
@@ -61,6 +68,8 @@ class Pawn extends Piece {
             moves.push(vec.copy());
             first = false;
         }
+        const enp = this.getEnpassantMoves(foes);
+        moves.push(...enp);
         return moves;
     }
     getCaptureMoves(pieces, moves) {
@@ -75,5 +84,25 @@ class Pawn extends Piece {
                 }
         }
         return captureMoves;
+    }
+    getEnpassantMoves (foes) {
+        const c = this.coord;
+        const moves = [];
+        const enpassantRow = 3 + this.dir;
+        if (c.y == enpassantRow) {
+            for (const p of foes) {
+                if (
+                    p.type == 'pawn' && /** The foe is also a pawn */
+                    p.coord.y == c.y && /* On the same row */
+                    p.enPassantable && /* Can be en passant-ed (?) */
+                    (p.coord.x == c.x - 1 || p.coord.x == c.x + 1)
+                ) {
+                    moves.push(createVector(p.coord.x, c.y+(2*this.dir-1)));
+                    if (moves.length >= 2) break;
+                }
+            }
+        }
+        this.cache.enPassantMoves = moves;
+        return moves;
     }
 }

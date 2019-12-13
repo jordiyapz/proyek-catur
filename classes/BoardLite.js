@@ -4,6 +4,7 @@ class BoardLite {
         this.isOnCheck = false;
         this.pieces = {white:[], black:[]};
         this.setupPieces(pieces);
+        this.cache = {};
     }
 
     /**
@@ -91,5 +92,11 @@ class BoardLite {
         }
         pawnArr.splice(pawnId, 1);
         pawnArr.push(getNewPiece());
+    }
+    doEnPassant (pawn, foes) {
+        const c = pawn.coord;
+        const {dir} = pawn;
+        const id = foes.findIndex(p => p.coord.equals(createVector(c.x, c.y - (dir*2-1))));
+        foes.splice(id, 1);
     }
 }

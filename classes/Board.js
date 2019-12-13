@@ -254,7 +254,8 @@ class Board extends BoardLite {
         switch (this.state) {
             case 0:
                 this.cache.isDragging = false;
-                if (this.cache.movingPieces) {
+                const {movingPieces} = this.cache;
+                if (movingPieces) {
                     const mouseVec = this.toCoord(mouseX, mouseY);
                     for (const c of this.cache.possibleMoves) {
                         if(mouseVec.equals(c)) {
@@ -267,13 +268,30 @@ class Board extends BoardLite {
                                     break;
                                 }
                             }
-                            const flag = this.cache.movingPieces.move(c.x, c.y);
+
+                            const flag = movingPieces.move(c.x, c.y);
+
+                            if (this.cache.command == 'remove enpassantable') {
+                                // This must be exec after the turn where enpassantable pawn moved
+                                const {pawn} = this.cache;
+                                pawn.enPassantable = false;
+                                delete this.cache.command;
+                                delete this.cache.pawn;
+                            }
+
+                            if (movingPieces.type == 'pawn' && movingPieces.enPassantable) {
+                                this.cache.pawn = movingPieces;
+                                this.cache.command = 'remove enpassantable';
+                            }
+
                             if (flag == 'PAWN PROMOTION') {
-                                const pawn = this.cache.movingPieces;
+                                const pawn = movingPieces;
                                 this.cache.friends = (pawn.isWhite)? pieces.white:pieces.black;
                                 this.cache.pawn = pawn;
                                 this.state = 1;
                                 break;
+                            } else if (flag == 'ENPASSANT') {
+                                this.doEnPassant(movingPieces, foes);
                             }
                             if (this.eval(this.turn==0)) {
                                 this.isOnCheck = true;
