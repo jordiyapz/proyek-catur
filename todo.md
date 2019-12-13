@@ -9,7 +9,9 @@
 - [x] Tambahkan Castling
 - [x] Pawn Promotion
 - [x] En Passant
+- [ ] Tambahkan undo
 - [ ] Pembersihan Bug
+- [ ] Buat unit testing
 ## Tampilan Game
 - [ ] Halaman depan
 - [ ] Halaman loading
@@ -21,3 +23,5 @@
 ### Pembuatan AI
 - [ ] Perbaiki pembagian tugas Board dan BoardLite
 ### Fitur online multiplayer
+- [x] Deploy
+- [ ] Atur websocket
