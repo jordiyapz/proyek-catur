@@ -4,6 +4,7 @@ function setup() {
     resizePieceImages(Global.tileSize);
     canvas = createCanvas(Global.width, Global.height);
     gm = new GameModule();
+    while (!gm) {} // Wait for the GameModule
     frameRate(60);
 }
 function draw() {
