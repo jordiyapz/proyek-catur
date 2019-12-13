@@ -13,6 +13,7 @@
 - [x] En Passant
 - [ ] Tambahkan undo
 - [ ] Pembersihan Bug
+  - [ ] Bug pada fitur enPassant x rotate
 - [ ] Buat unit testing
 
 ## Tampilan Game
