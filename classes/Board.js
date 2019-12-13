@@ -6,13 +6,14 @@ class Board extends BoardLite {
         this.border = border;
         this.styles = { hint: 0 };
         this.autoRotate = false;
-        this.stash = {};
-        this.movingPiece = null;
-        this.possibleMoves = null;
-        this.captureMoves = null;
-        this.offset = null;
-        this.ghost = null;
-        this.dragging = null;
+        this.cache = {
+            movingPieces: null,
+            possibleMoves: null,
+            captureMoves: null,
+            offset: null,
+            ghost: null,
+            isDragging: null
+        };
         this.state = 0;
         this.setupProperty();
     }
@@ -111,14 +112,14 @@ class Board extends BoardLite {
 
         /** Default isn't that boring thou */
         if (this.styles.hint == 0) {
-            if (this.possibleMoves) {
+            if (this.cache.possibleMoves) {
                 fill(0, 255, 0, 160);
-                for (const vec of this.possibleMoves) {
+                for (const vec of this.cache.possibleMoves) {
                     const pos = this.toPos(vec);
                     rect(pos.x, pos.y, tileSize, tileSize);
                 }
                 fill(255, 0, 0);
-                for (const vec of this.captureMoves) {
+                for (const vec of this.cache.captureMoves) {
                     const pos = this.toPos(vec);
                     rect(pos.x, pos.y, tileSize, tileSize);
                 }
@@ -134,18 +135,18 @@ class Board extends BoardLite {
 
         /** Style does matter, isn't? */
         if (this.styles.hint == 1) {
-            if (this.possibleMoves) {
+            if (this.cache.possibleMoves) {
                 strokeWeight(2);
                 fill(0, 255, 0, 160);
                 stroke(0, 180, 0, 160);
-                for (const vec of this.possibleMoves) {
+                for (const vec of this.cache.possibleMoves) {
                     const pos = this.toPos(vec);
                     ellipse(pos.x+tileSize/2, pos.y+tileSize/2, tileSize*.2);
                 }
                 fill(255, 0, 0);
                 strokeWeight(3);
                 stroke(200, 0, 0);
-                for (const vec of this.captureMoves) {
+                for (const vec of this.cache.captureMoves) {
                     const pos = this.toPos(vec);
                     ellipse(pos.x+tileSize/2, pos.y+tileSize/2, tileSize*.25);
                 }
@@ -153,7 +154,7 @@ class Board extends BoardLite {
         }
 
         /** If there is ghost, render it! */
-        if (this.ghost) this.ghost.render();
+        if (this.cache.ghost) this.cache.ghost.render();
 
         /** Chuckhaeyyo! You've got the promotion! */
         if (this.state == 1 /* PAWN PROMOTION */) {
@@ -170,7 +171,7 @@ class Board extends BoardLite {
             fill(0);
             textSize(size*.07);
             text ('Promote to', pos.x+width/2, pos.y+padding.y);
-            const {pawn} = this.stash;
+            const {pawn} = this.cache;
             const btns = (pawn.isWhite)? promoteBtn.white:promoteBtn.black;
             for (const btn of btns) btn.render();
             pop();
@@ -188,17 +189,17 @@ class Board extends BoardLite {
     onMousePressed () {
         switch (this.state) {
             case 0:
-                if (!this.dragging) {
-                    this.movingPiece = this.getPiece(mouseX, mouseY);
-                    if (this.movingPiece) {
-                        if (this.movingPiece.isWhite == (this.turn)) {
+                if (!this.cache.isDragging) {
+                    this.cache.movingPieces = this.getPiece(mouseX, mouseY);
+                    if (this.cache.movingPieces) {
+                        if (this.cache.movingPieces.isWhite == (this.turn)) {
                             const pieces = {white: this.pieces.white, black: this.pieces.black};
-                            this.possibleMoves = this.movingPiece.getPossibleMoves(pieces);
-                            this.captureMoves = this.movingPiece.getCaptureMoves(pieces, this.possibleMoves);
-                            this.offset = this.tileSize / 2;
-                            this.ghost = this.movingPiece.createGhost(mouseX-this.offset, mouseY-this.offset, this.tileSize);
-                            this.dragging = true;
-                        } else this.movingPiece = null;
+                            this.cache.possibleMoves = this.cache.movingPieces.getPossibleMoves(pieces);
+                            this.cache.captureMoves = this.cache.movingPieces.getCaptureMoves(pieces, this.cache.possibleMoves);
+                            this.cache.offset = this.tileSize / 2;
+                            this.cache.ghost = this.cache.movingPieces.createGhost(mouseX-this.cache.offset, mouseY-this.cache.offset, this.tileSize);
+                            this.cache.isDragging = true;
+                        } else this.cache.movingPieces = null;
                     }
                 } break;
             case 1:
@@ -209,10 +210,10 @@ class Board extends BoardLite {
                     if (btn.isClicked()) {
                         const {pieces} = this;
                         const {friends, foes} = Piece.getFriendsFoes(pieces, this.turn);
-                        const {pawn} = this.stash;
+                        const {pawn} = this.cache;
                         const pawnIdx = friends.findIndex(p => p.coord.equals(pawn.coord));
                         this.promotePawn(friends, pawnIdx, i);
-                        delete this.stash.pawn;
+                        delete this.cache.pawn;
                         if (this.eval(this.turn==0)) {
                             this.isOnCheck = true;
                             for (const p of foes) {
@@ -243,8 +244,8 @@ class Board extends BoardLite {
     onMouseDragged() {
         switch (this.state) {
             case 0:
-                if (this.ghost) this.ghost.pos.set(
-                    mouseX-this.offset, mouseY-this.offset
+                if (this.cache.ghost) this.cache.ghost.pos.set(
+                    mouseX-this.cache.offset, mouseY-this.cache.offset
                 );
                 break;
         }
@@ -252,10 +253,10 @@ class Board extends BoardLite {
     onMouseReleased() {
         switch (this.state) {
             case 0:
-                this.dragging = false;
-                if (this.movingPiece) {
+                this.cache.isDragging = false;
+                if (this.cache.movingPieces) {
                     const mouseVec = this.toCoord(mouseX, mouseY);
-                    for (const c of this.possibleMoves) {
+                    for (const c of this.cache.possibleMoves) {
                         if(mouseVec.equals(c)) {
                             const {pieces} = this;
                             const {friends, foes} = Piece.getFriendsFoes(pieces, this.turn);
@@ -266,11 +267,11 @@ class Board extends BoardLite {
                                     break;
                                 }
                             }
-                            const flag = this.movingPiece.move(c.x, c.y);
+                            const flag = this.cache.movingPieces.move(c.x, c.y);
                             if (flag == 'PAWN PROMOTION') {
-                                const pawn = this.movingPiece;
-                                this.stash.friends = (pawn.isWhite)? pieces.white:pieces.black;
-                                this.stash.pawn = pawn;
+                                const pawn = this.cache.movingPieces;
+                                this.cache.friends = (pawn.isWhite)? pieces.white:pieces.black;
+                                this.cache.pawn = pawn;
                                 this.state = 1;
                                 break;
                             }
@@ -298,9 +299,9 @@ class Board extends BoardLite {
                         }
                     }
 
-                    this.movingPiece = null;
-                    this.possibleMoves = null;
-                    this.ghost = null;
+                    this.cache.movingPieces = null;
+                    this.cache.possibleMoves = null;
+                    this.cache.ghost = null;
                 }
                 break;
         }
