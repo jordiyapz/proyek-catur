@@ -4,7 +4,6 @@ function setup() {
     resizePieceImages(Global.tileSize);
     canvas = createCanvas(Global.width, Global.height);
     gm = new GameModule();
-    while (!gm) {} // Wait for the GameModule
     frameRate(60);
 }
 function draw() {
@@ -13,21 +12,21 @@ function draw() {
 }
 
 function mousePressed() {
-    gm.onMousePressed();
+    if (gm) gm.onMousePressed();
     return false;
 }
 
 function mouseReleased() {
-    gm.onMouseReleased();
+    if (gm) gm.onMouseReleased();
     return false;
 }
 
 function mouseDragged() {
-    gm.onMouseDragged();
+    if (gm) gm.onMouseDragged();
     return false;
 }
 
 function mouseMoved() {
-    gm.onMouseMoved();
+    if (gm) gm.onMouseMoved();
     return false;
 }

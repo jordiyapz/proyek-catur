@@ -2,6 +2,7 @@ class GameModule {
     constructor() {
         const {border, tileSize} = Global;
         this.board = new Board(0, 0, tileSize, border);
+        this.agent = new Agent(this.board, true);
     }
     render() {
         this.board.render();
