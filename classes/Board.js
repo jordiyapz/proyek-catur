@@ -12,9 +12,11 @@ class Board extends BoardLite {
             captureMoves: null,
             offset: null,
             ghost: null,
-            isDragging: null
+            isDragging: null,
+            ct: 0
         };
         this.state = 0;
+        this.isOnCheck = false;
         this.setupProperty();
     }
 
@@ -155,6 +157,25 @@ class Board extends BoardLite {
 
         /** If there is ghost, render it! */
         if (this.cache.ghost) this.cache.ghost.render();
+
+        if (this.isOnCheck) {
+            let {ct} = this.cache;
+            if (ct < 200) {
+                push();
+                strokeWeight(Math.floor(size*.012));
+                strokeJoin(ROUND);
+                textSize(size*.14);
+                textAlign(CENTER, CENTER);
+                let alpha = Math.floor(34*Math.log(-ct + 200) + 74.85720954);
+                // let alpha = Math.floor((-7*(1.018182)**(ct) + 255));
+                if (alpha < 0) alpha = 0;
+                fill(80, alpha);
+                stroke(255, alpha);
+                text ('CHECK', size/2, size/2);
+                pop();
+                this.cache.ct += 2;
+            }
+        }
 
         /** Chuckhaeyyo! You've got the promotion! */
         if (this.state == 1 /* PAWN PROMOTION */) {
