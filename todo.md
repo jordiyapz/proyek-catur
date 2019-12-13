@@ -4,7 +4,7 @@
 - [x] Bisa nentuin gerakan
 - [x] Putar papan
 - [x] Tambahkan Check
-- [ ] Tambahkan Checkmate
+- [x] Tambahkan Checkmate
 - [x] Perbaiki gerakan
 - [x] Tambahkan Castling
 - [x] Pawn Promotion
