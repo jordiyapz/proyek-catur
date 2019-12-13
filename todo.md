@@ -1,5 +1,7 @@
 # TO-DO
+
 ## Mekanisme Game
+
 - [x] Bisa gerak
 - [x] Bisa nentuin gerakan
 - [x] Putar papan
@@ -12,16 +14,35 @@
 - [ ] Tambahkan undo
 - [ ] Pembersihan Bug
 - [ ] Buat unit testing
+
 ## Tampilan Game
+
 - [ ] Halaman depan
 - [ ] Halaman loading
-- [ ] Halaman Game: Board, Timer, Turn
-## Fitur
-- [ ] Two player single page
+- [ ] Halaman Game:
+  - [x] Board
+  - [ ] Timer
+  - [ ] Turn
+
+## Mode Permainan
+
+- [ ] Two player on a single page
 - [ ] Two player online
-- [ ] Single player (PAKE AI)
-### Pembuatan AI
-- [ ] Perbaiki pembagian tugas Board dan BoardLite
-### Fitur online multiplayer
+- [ ] Single player
+
+### Mode Single Player
+
+#### Pembuatan AI
+
+- [x] Perbaiki pembagian tugas Board dan BoardLite
+- [ ] Buat agen
+- [ ] Tambahkan cek nilai statis
+- [ ] Tambahkan method minimax
+- [ ] Buat Alpha Beta Prunning
+
+### Mode Online Multiplayer
+
+#### Persiapan Server
+
 - [x] Deploy
 - [ ] Atur websocket
