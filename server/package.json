@@ -1,0 +1,30 @@
+{
+  "name": "proyek-catur",
+  "version": "1.0.0",
+  "description": "tugas besar mata kuliah PBO",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "2.0.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jordiyapz/proyek-catur.git"
+  },
+  "keywords": [
+    "chess",
+    "game"
+  ],
+  "author": "Jordi Yaputra",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jordiyapz/proyek-catur/issues"
+  },
+  "homepage": "https://github.com/jordiyapz/proyek-catur#readme"
+}
