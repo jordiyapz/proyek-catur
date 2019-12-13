@@ -59,6 +59,11 @@ class BoardLite {
         }
     }
 
+    /**
+     *
+     * @param {Boolean} isWhite flag that indicates whether this is an eval for white pieces or not
+     * @return {Number} Whereas 0 is Ok, 1 is Check, 2 is Checkmate A.K.A Gameover
+     */
     eval (isWhite) {
         const {friends, foes} = Piece.getFriendsFoes(this.pieces, isWhite);
         const king = friends.find(p => p.type == 'king');
@@ -66,10 +71,21 @@ class BoardLite {
             const moves = p.getHashMoves(this.pieces);
             const captureMoves = p.getCaptureMoves(this.pieces, moves);
             for (const c of captureMoves) {
-                if (c.equals(king.coord)) return true;
+                if (c.equals(king.coord)) {
+                    return true;
+                }
             }
         }
         return false;
+    }
+
+    evalCheckmate(friends) {
+        let moves = [];
+        for (const p of friends) {
+            moves = p.getPossibleMoves(this.pieces);
+            if (moves.length > 0) return false;
+        }
+        return true;
     }
 
     /**

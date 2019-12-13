@@ -175,6 +175,16 @@ class Board extends BoardLite {
             const btns = (pawn.isWhite)? promoteBtn.white:promoteBtn.black;
             for (const btn of btns) btn.render();
             pop();
+        } else if (this.state == 2 /* CHECKMATE */) {
+            push();
+            stroke(255);
+            strokeWeight(Math.floor(size*.012));
+            strokeJoin(ROUND);
+            textSize(size*.14);
+            textAlign(CENTER, CENTER);
+            fill(255,0,0);
+            text ('CHECKMATE', size/2, size/2);
+            pop();
         }
     }
 
@@ -293,7 +303,12 @@ class Board extends BoardLite {
                             } else if (flag == 'ENPASSANT') {
                                 this.doEnPassant(movingPieces, foes);
                             }
-                            if (this.eval(this.turn==0)) {
+                            const nextTurn = (this.turn==0);
+                            if (this.eval(nextTurn)) {
+                                if (this.evalCheckmate(foes)) {
+                                    console.log('CHECKMATE');
+                                    this.state = 2;
+                                }
                                 this.isOnCheck = true;
                                 for (const p of foes) {
                                     if (p.type == 'king') {
