@@ -1,11 +1,15 @@
 # TO-DO
 ## Mekanisme Game
+- [x] Bisa gerak
+- [x] Bisa nentuin gerakan
 - [x] Putar papan
-- [x] Tambahkan Check dan Checkmate
-- [x] Perbaiki gerakan King
+- [x] Tambahkan Check
+- [ ] Tambahkan Checkmate
+- [x] Perbaiki gerakan
 - [x] Tambahkan Castling
 - [x] Pawn Promotion
-- [ ] En Passant
+- [x] En Passant
+- [ ] Pembersihan Bug
 ## Tampilan Game
 - [ ] Halaman depan
 - [ ] Halaman loading
@@ -13,4 +17,7 @@
 ## Fitur
 - [ ] Two player single page
 - [ ] Two player online
-- [ ] Single player
+- [ ] Single player (PAKE AI)
+### Pembuatan AI
+- [ ] Perbaiki pembagian tugas Board dan BoardLite
+### Fitur online multiplayer
