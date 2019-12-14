@@ -92,7 +92,7 @@ class BoardLite {
 
         if (flag == 'PAWN PROMOTION') {
             const pawn = piece;
-            this.cache.friends = (pawn.isWhite)? pieces.white:pieces.black;
+            this.cache.friends = friends;
             this.cache.pawn = pawn;
             this.state = 1;
             return;
@@ -106,6 +106,7 @@ class BoardLite {
                 this.state = 2;
             }
             this.isOnCheck = true;
+            this.cache.ct = 0;
             for (const p of foes) {
                 if (p.type == 'king') {
                     p.isOnCheck = true;
