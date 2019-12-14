@@ -59,14 +59,15 @@ class King extends Piece {
             }
         }
         if (!this.isOnCheck && this.castlingable)
-            this._modCastlingMoves(moves, friends);
+            this._modCastlingMoves(moves, pieces);
         return moves;
     }
 
-    _modCastlingMoves (moves, friends) {
+    _modCastlingMoves (moves, pieces) {
         const c = this.coord;
         const castableRooks = [];
         this.castableRooks = [];
+        const {friends, foes} = this.getFriendsFoes(pieces);
         for (const p of friends) {
             if (p.type == 'rook' && p.castlingable) castableRooks.push(p);
             if (castableRooks.length >= 2) break;
@@ -77,7 +78,7 @@ class King extends Piece {
             const vec = createVector(c.x+fac, c.y);
             let stop = false;
             for (; !stop && Math.abs(vec.x - rx) > 0; vec.x+=fac) {
-                for (const p of friends) {
+                for (const p of [...friends, ...foes]) {
                     if (p.coord.equals(vec)) {
                         stop = true;
                         break;
