@@ -8,6 +8,7 @@ function setup() {
 }
 function draw() {
     background(0);
+    gm.update();
     gm.render();
 }
 

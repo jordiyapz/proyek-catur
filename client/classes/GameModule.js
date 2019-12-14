@@ -10,9 +10,18 @@ class GameModule {
             this.agent = new Agent(this.board, true);
         }
         this.history = [this.board.clone()];
+        this.btns = {
+            undo: new Button('undo', 2,4, 10)
+        }
+        this.btns.undo.setImage(Global.images.gui.undo);
+        this.btns.undo.onClick = () => {
+            this.undo();
+        }
     }
 
-    update() {}
+    update() {
+
+    }
 
     undo() {
         if (this.history.length > 0) {
@@ -21,9 +30,18 @@ class GameModule {
     }
     render() {
         this.board.render();
+        for (const btnKey in btns) {
+            const btn = btns[btnKey];
+            btn.render();
+        }
     }
     onMousePressed() {
         this.board.onMousePressed();
+        const {btns} = this;
+        for (const btnKey in btns) {
+            const btn = btns[btnKey];
+            btn.listenClick();
+        }
     }
     onMouseReleased() {
         const flag = this.board.onMouseReleased();
