@@ -11,8 +11,8 @@ class King extends Piece {
         const newKing = new King(x, y, this.isWhite);
         const {castableRooks, castlingable, isOnCheck} = this;
         newKing.castlingable = castlingable;
-        for (const c of castableRooks) {
-            newKing.castableRooks.push(c.copy());
+        for (const rook of castableRooks) {
+            newKing.castableRooks.push(rook.clone());
         }
         newKing.isOnCheck = isOnCheck;
         return newKing;
@@ -32,7 +32,7 @@ class King extends Piece {
         }
         this.coord.set(x, y);
         this.castlingable = false;
-        this.castableRooks = null;
+        this.castableRooks = [];
     }
 
     getHashMoves(pieces) {

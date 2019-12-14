@@ -3,12 +3,14 @@
 ## Fixed Bugs
 
 - [x] fixed `piece.clone()' bugs
+- [x] Tulisan check cuma muncul sekali
+- [x] Tulisan check muncul saat checkmate
 
 ## List of Known Bugs
 
-- [x] Tulisan check cuma muncul sekali
 - [ ] Gerakan raja di awal tidak jelas
-- [ ] Tulisan check muncul saat checkmate
+- [ ] Setelah *Pawn promote* tidak ada tulisan check
+- [ ] Pada rotate, hitam bisa skip
 
 ## List of Predicted Bugs
 
