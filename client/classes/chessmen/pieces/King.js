@@ -32,7 +32,7 @@ class King extends Piece {
         }
         this.coord.set(x, y);
         this.castlingable = false;
-        this.castableRooks = null;
+        this.castableRooks = [];
     }
 
     getHashMoves(pieces) {
