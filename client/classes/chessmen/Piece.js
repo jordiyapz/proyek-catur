@@ -18,7 +18,7 @@ class Piece {
 
         for (let i = moves.length-1; i >= 0; i--) {
             const move = moves[i];
-            const clone = new BoardLite (BoardLite.clonePieces(pieces));
+            const clone = new BoardLite (pieces);
             const that = this;
             const {friends, foes} = Piece.getFriendsFoes(clone.pieces, that.isWhite);
             const piece = friends.find(p => p.coord.equals(that.coord));
@@ -27,7 +27,7 @@ class Piece {
                 foes.splice(foeId, 1);
             }
             piece.move(move.x, move.y);
-            if (clone.evalCheck(this.isWhite)) {
+            if (clone.eval(this.isWhite)) {
                 moves.splice(i, 1);
             }
         }
