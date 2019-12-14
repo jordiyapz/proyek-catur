@@ -11,10 +11,7 @@
 - [x] Tambahkan Castling
 - [x] Pawn Promotion
 - [x] En Passant
-- [ ] Tambahkan undo
 - [ ] Pembersihan Bug
-- [ ] Buat unit testing
-
 ## Tampilan Game
 
 - [ ] Halaman depan
@@ -28,21 +25,7 @@
 
 - [ ] Two player on a single page
 - [ ] Two player online
-- [ ] Single player
-
-### Mode Single Player
-
-#### Pembuatan AI
-
-- [x] Perbaiki pembagian tugas Board dan BoardLite
-- [ ] Buat agen
-- [ ] Tambahkan cek nilai statis
-- [ ] Tambahkan method minimax
-- [ ] Buat Alpha Beta Prunning
-
-### Mode Online Multiplayer
-
-#### Persiapan Server
-
-- [x] Deploy
-- [ ] Atur websocket
+- [ ] Single player (PAKE AI)
+### Pembuatan AI
+- [ ] Perbaiki pembagian tugas Board dan BoardLite
+### Fitur online multiplayer
