@@ -7,6 +7,12 @@ class BoardLite {
             this.setupPieces();
         } else this.pieces = pieces;
         this.cache = {};
+        /**
+         * State = 0 == Normal
+         * State = 1 == Pawn Promote
+         * State = 2 == Checkmate
+         */
+        this.state = 0;
     }
 
     /**

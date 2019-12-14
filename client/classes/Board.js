@@ -5,7 +5,7 @@ class Board extends BoardLite {
         this.tileSize = tileSize;
         this.border = border;
         this.styles = { hint: 0 };
-        this.autoRotate = false;
+        this.autoRotate = true;
         this.cache = {
             movingPieces: null,
             possibleMoves: null,
@@ -15,10 +15,8 @@ class Board extends BoardLite {
             isDragging: null,
             ct: 0
         };
-        this.state = 0;
         this.isOnCheck = false;
         this.setupProperty();
-        // this.rotate();
     }
 
     clone () {
@@ -190,7 +188,7 @@ class Board extends BoardLite {
         /** If there is ghost, render it! */
         if (this.cache.ghost) this.cache.ghost.render();
 
-        if (this.isOnCheck) {
+        if (this.isOnCheck && this.state != 2) {
             let {ct} = this.cache;
             if (ct < 200) {
                 push();

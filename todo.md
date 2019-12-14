@@ -7,13 +7,15 @@
 - [x] Putar papan
 - [x] Tambahkan Check
 - [x] Tambahkan Checkmate
+- [ ] Tambahkan Stalemate
 - [x] Perbaiki gerakan
 - [x] Tambahkan Castling
 - [x] Pawn Promotion
 - [x] En Passant
-- [ ] Tambahkan undo
+- [x] Tambahkan undo
 - [ ] Pembersihan Bug
 - [ ] Buat unit testing
+- [ ] klik and drop
 
 ## Tampilan Game
 
@@ -26,7 +28,7 @@
 
 ## Mode Permainan
 
-- [ ] Two player on a single page
+- [x] Two player on a single page
 - [ ] Two player online
 - [ ] Single player
 
