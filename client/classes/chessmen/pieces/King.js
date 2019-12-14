@@ -12,7 +12,7 @@ class King extends Piece {
         const {castableRooks, castlingable, isOnCheck} = this;
         newKing.castlingable = castlingable;
         for (const c of castableRooks) {
-            newPawn.castableRooks.push(c.copy());
+            newKing.castableRooks.push(c.copy());
         }
         newKing.isOnCheck = isOnCheck;
         return newKing;
