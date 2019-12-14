@@ -4,6 +4,7 @@
 
 - [x] Tulisan check cuma muncul sekali
 - [ ] Gerakan raja di awal tidak jelas
+- [ ] Tulisan check muncul saat checkmate
 
 ## List of Predicted Bugs
 
