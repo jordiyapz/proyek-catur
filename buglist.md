@@ -1,20 +1,13 @@
 # Bug List
 
-## Fixed Bugs
-
-- [x] fixed `piece.clone()` bugs
-- [x] Tulisan check cuma muncul sekali
-- [x] Tulisan check muncul saat checkmate
-
 ## List of Known Bugs
 
-- [ ] Gerakan raja di awal tidak jelas
-- [ ] Setelah *Pawn Promote* tidak ada tulisan check
 - [ ] Pada rotate, hitam kadang bisa skip sendiri
+- [ ] *Castling* ketika ada musuh di dua petak di sebelah raja masih bisa
 
 ## List of Predicted Bugs
 
-- [ ] Kemungkinan Bug pada fitur en-Passant x rotate
+- [x] Kemungkinan Bug pada fitur en-Passant x rotate
 - [ ] Kemungkinan Bug pada `getPossibleMoves()` x rotate
 - [ ] Kemungkinan Bug pada *King.js* di
         `newKing.castableRooks.push(rook.clone());`
@@ -32,3 +25,11 @@
         }
 
 > **Note:** Klon *Rook* yang di push tidak akan sama dengan rook yg seharusnya disimpan oleh king
+
+## Fixed Bugs
+
+- [x] fixed `piece.clone()` bugs
+- [x] Tulisan check cuma muncul sekali
+- [x] Tulisan check muncul saat checkmate
+- [x] Gerakan raja di awal tidak jelas
+- [x] Setelah *Pawn Promote* tidak ada tulisan check

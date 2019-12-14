@@ -278,24 +278,7 @@ class Board extends BoardLite {
                         const pawnIdx = friends.findIndex(p => p.coord.equals(pawn.coord));
                         this.promotePawn(friends, pawnIdx, i);
                         delete this.cache.pawn;
-                        if (this.evalCheck(this.turn==0)) {
-                            this.isOnCheck = true;
-                            for (const p of foes) {
-                                if (p.type == 'king') {
-                                    p.isOnCheck = true;
-                                    break;
-                                }
-                            }
-                        }
-                        else if (this.isOnCheck) {
-                            this.isOnCheck = false;
-                            for (const p of friends) {
-                                if (p.type == 'king') {
-                                    p.isOnCheck = false;
-                                    break;
-                                }
-                            }
-                        }
+                        this.fullEval(friends, foes);
                         this.turn = (this.turn == 1)? 0:1;
                         if (this.autoRotate) this.rotate();
                         this.state = 0;

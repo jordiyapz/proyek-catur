@@ -104,34 +104,12 @@ class BoardLite {
             this.cache.friends = friends;
             this.cache.pawn = pawn;
             this.state = 1;
+            if (this.autoRotate) this.rotate();
             return;
         } else if (flag == 'ENPASSANT') {
             this.doEnPassant(piece, foes);
         }
-        const nextTurn = (this.turn==0);
-        if (this.evalCheck(nextTurn)) {
-            if (this.evalCheckmate(foes)) {
-                console.log('CHECKMATE');
-                this.state = 2;
-            }
-            this.isOnCheck = true;
-            this.cache.ct = 0;
-            for (const p of foes) {
-                if (p.type == 'king') {
-                    p.isOnCheck = true;
-                    break;
-                }
-            }
-        }
-        else if (this.isOnCheck) {
-            this.isOnCheck = false;
-            for (const p of friends) {
-                if (p.type == 'king') {
-                    p.isOnCheck = false;
-                    break;
-                }
-            }
-        }
+        this.fullEval(friends, foes);
         this.turn = (this.turn == 1)? 0:1;
     }
 
@@ -175,6 +153,32 @@ class BoardLite {
             if (moves.length > 0) return false;
         }
         return true;
+    }
+
+    fullEval(friends, foes) {
+        const nextTurn = (this.turn==0);
+        if (this.evalCheck(nextTurn)) {
+            if (this.evalCheckmate(foes)) {
+                this.state = 2;
+            }
+            this.isOnCheck = true;
+            this.cache.ct = 0;
+            for (const p of foes) {
+                if (p.type == 'king') {
+                    p.isOnCheck = true;
+                    break;
+                }
+            }
+        }
+        else if (this.isOnCheck) {
+            this.isOnCheck = false;
+            for (const p of friends) {
+                if (p.type == 'king') {
+                    p.isOnCheck = false;
+                    break;
+                }
+            }
+        }
     }
 
     /**
