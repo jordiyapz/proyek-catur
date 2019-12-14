@@ -3,7 +3,6 @@
 ## List of Known Bugs
 
 - [ ] Pada rotate, hitam kadang bisa skip sendiri
-- [ ] *Castling* ketika ada musuh di dua petak di sebelah raja masih bisa
 
 ## List of Predicted Bugs
 
@@ -33,3 +32,4 @@
 - [x] Tulisan check muncul saat checkmate
 - [x] Gerakan raja di awal tidak jelas
 - [x] Setelah *Pawn Promote* tidak ada tulisan check
+- [x] *Castling* ketika ada musuh di dua petak di sebelah raja masih bisa
