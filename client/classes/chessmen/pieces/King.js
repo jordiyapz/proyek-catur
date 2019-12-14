@@ -8,7 +8,12 @@ class King extends Piece {
 
     clone() {
         const {x, y} = this.coord;
-        return new King(x, y, this.isWhite);
+        const newKing = new King(x, y, this.isWhite);
+        const {castableRooks, castlingable, isOnCheck} = this;
+        newKing.castlingable = castlingable;
+        newKing.castableRooks = [...castableRooks];
+        newKing.isOnCheck = isOnCheck;
+        return newKing;
     }
 
     move(x, y) {

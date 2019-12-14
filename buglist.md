@@ -1,5 +1,9 @@
 # Bug List
 
+## Fixed Bugs
+
+- [x] fixed `piece.clone()' bugs
+
 ## List of Known Bugs
 
 - [x] Tulisan check cuma muncul sekali
