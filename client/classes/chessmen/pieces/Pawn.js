@@ -14,7 +14,10 @@ class Pawn extends Piece {
         newPawn.dir = this.dir;
         newPawn.started = this.started;
         newPawn.enPassantable = this.enPassantable;
-        newPawn.cache = {enPassantMoves: [...this.cache.enPassantMoves]};
+        const {enPassantMoves} = this.cache;
+        for (const c of enPassantMoves) {
+            newPawn.cache.enPassantMoves.push(c.copy());
+        }
         return newPawn;
     }
 
