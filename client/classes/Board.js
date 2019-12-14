@@ -18,7 +18,38 @@ class Board extends BoardLite {
         this.state = 0;
         this.isOnCheck = false;
         this.setupProperty();
-        this.rotate();
+        // this.rotate();
+    }
+
+    clone () {
+        const {pos, tileSize, border} = this;
+        const cln = new Board(pos.x, pos.y, tileSize, border);
+        for (const key in cln) {
+            switch (key) {
+                case 'pieces':
+                    cln[key] = this.clonePieces();
+                    break;
+                case 'pos':
+                    cln[key] = this.pos.copy();
+                    break;
+                case 'property':
+                    cln[key] = this.property;
+                    break;
+                case 'cache':
+                    cln[key] = {};
+                    for (const k in this.cache) {
+                        if (k == 'pawn') {
+                            cln.cache[k] = this.cache.pawn.clone();
+                        } else {
+                            cln.cache[k] = this.cache[k]
+                        }
+                    }
+                    break;
+                default :
+                    cln[key] = Util.objCloner(this[key]);
+            }
+        }
+        return cln;
     }
 
     toPos(coord) {
@@ -210,8 +241,6 @@ class Board extends BoardLite {
         }
     }
 
-
-
     onMouseMoved () {
         switch (this.state) {
             case 1:
@@ -248,7 +277,7 @@ class Board extends BoardLite {
                         const pawnIdx = friends.findIndex(p => p.coord.equals(pawn.coord));
                         this.promotePawn(friends, pawnIdx, i);
                         delete this.cache.pawn;
-                        if (this.eval(this.turn==0)) {
+                        if (this.evalCheck(this.turn==0)) {
                             this.isOnCheck = true;
                             for (const p of foes) {
                                 if (p.type == 'king') {
@@ -285,6 +314,7 @@ class Board extends BoardLite {
         }
     }
     onMouseReleased() {
+        let flag = null;
         switch (this.state) {
             case 0:
                 this.cache.isDragging = false;
@@ -295,6 +325,7 @@ class Board extends BoardLite {
                         if(mouseVec.equals(c)) {
                             this.movePieceTo(movingPieces, c.x, c.y);
                             if (this.autoRotate) this.rotate();
+                            flag = 'move';
                             break;
                         }
                     }
@@ -304,5 +335,6 @@ class Board extends BoardLite {
                 }
                 break;
         }
+        return flag;
     }
 }
