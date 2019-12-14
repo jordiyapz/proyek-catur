@@ -1,5 +1,7 @@
 # TO-DO
+
 ## Mekanisme Game
+
 - [x] Bisa gerak
 - [x] Bisa nentuin gerakan
 - [x] Putar papan
@@ -9,24 +11,38 @@
 - [x] Tambahkan Castling
 - [x] Pawn Promotion
 - [x] En Passant
+- [ ] Tambahkan undo
 - [ ] Pembersihan Bug
-<<<<<<< HEAD
-=======
 - [ ] Buat unit testing
->>>>>>> parent of 5ee113f... Merge pull request #1 from andrewsihotang/latihan
+
 ## Tampilan Game
+
 - [ ] Halaman depan
 - [ ] Halaman loading
-- [ ] Halaman Game: Board, Timer, Turn
-## Fitur
-- [ ] Two player single page
+- [ ] Halaman Game:
+  - [x] Board
+  - [ ] Timer
+  - [ ] Turn
+
+## Mode Permainan
+
+- [ ] Two player on a single page
 - [ ] Two player online
-- [ ] Single player (PAKE AI)
-### Pembuatan AI
-- [ ] Perbaiki pembagian tugas Board dan BoardLite
-### Fitur online multiplayer
-<<<<<<< HEAD
-=======
+- [ ] Single player
+
+### Mode Single Player
+
+#### Pembuatan AI
+
+- [x] Perbaiki pembagian tugas Board dan BoardLite
+- [ ] Buat agen
+- [ ] Tambahkan cek nilai statis
+- [ ] Tambahkan method minimax
+- [ ] Buat Alpha Beta Prunning
+
+### Mode Online Multiplayer
+
+#### Persiapan Server
+
 - [x] Deploy
 - [ ] Atur websocket
->>>>>>> parent of 5ee113f... Merge pull request #1 from andrewsihotang/latihan

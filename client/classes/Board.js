@@ -18,6 +18,38 @@ class Board extends BoardLite {
         this.state = 0;
         this.isOnCheck = false;
         this.setupProperty();
+        // this.rotate();
+    }
+
+    clone () {
+        const {pos, tileSize, border} = this;
+        const cln = new Board(pos.x, pos.y, tileSize, border);
+        for (const key in cln) {
+            switch (key) {
+                case 'pieces':
+                    cln[key] = this.clonePieces();
+                    break;
+                case 'pos':
+                    cln[key] = this.pos.copy();
+                    break;
+                case 'property':
+                    cln[key] = this.property;
+                    break;
+                case 'cache':
+                    cln[key] = {};
+                    for (const k in this.cache) {
+                        if (k == 'pawn') {
+                            cln.cache[k] = this.cache.pawn.clone();
+                        } else {
+                            cln.cache[k] = this.cache[k]
+                        }
+                    }
+                    break;
+                default :
+                    cln[key] = Util.objCloner(this[key]);
+            }
+        }
+        return cln;
     }
 
     toPos(coord) {
@@ -248,7 +280,7 @@ class Board extends BoardLite {
                         const pawnIdx = friends.findIndex(p => p.coord.equals(pawn.coord));
                         this.promotePawn(friends, pawnIdx, i);
                         delete this.cache.pawn;
-                        if (this.eval(this.turn==0)) {
+                        if (this.evalCheck(this.turn==0)) {
                             this.isOnCheck = true;
                             for (const p of foes) {
                                 if (p.type == 'king') {
@@ -288,6 +320,7 @@ class Board extends BoardLite {
         }
     }
     onMouseReleased() {
+        let flag = null;
         switch (this.state) {
             case 0:
                 const {cache} = this;
@@ -297,65 +330,9 @@ class Board extends BoardLite {
                     const mouseVec = this.toCoord(mouseX, mouseY);
                     for (const c of cache.possibleMoves) {
                         if(mouseVec.equals(c)) {
-                            const {pieces} = this;
-                            const {friends, foes} = Piece.getFriendsFoes(pieces, this.turn);
-                            for (let i = 0; i < foes.length; i++) {
-                                const p = foes[i];
-                                if (p.coord.equals(mouseVec)) {
-                                    foes.splice(i, 1);
-                                    break;
-                                }
-                            }
-
-                            const flag = movingPieces.move(c.x, c.y);
-
-                            if (this.cache.command == 'remove enpassantable') {
-                                // This must be exec after the turn where enpassantable pawn moved
-                                const {pawn} = this.cache;
-                                pawn.enPassantable = false;
-                                delete this.cache.command;
-                                delete this.cache.pawn;
-                            }
-
-                            if (movingPieces.type == 'pawn' && movingPieces.enPassantable) {
-                                this.cache.pawn = movingPieces;
-                                this.cache.command = 'remove enpassantable';
-                            }
-
-                            if (flag == 'PAWN PROMOTION') {
-                                const pawn = movingPieces;
-                                this.cache.friends = (pawn.isWhite)? pieces.white:pieces.black;
-                                this.cache.pawn = pawn;
-                                this.state = 1;
-                                break;
-                            } else if (flag == 'ENPASSANT') {
-                                this.doEnPassant(movingPieces, foes);
-                            }
-                            const nextTurn = (this.turn==0);
-                            if (this.eval(nextTurn)) {
-                                if (this.evalCheckmate(foes)) {
-                                    console.log('CHECKMATE');
-                                    this.state = 2;
-                                }
-                                this.isOnCheck = true;
-                                for (const p of foes) {
-                                    if (p.type == 'king') {
-                                        p.isOnCheck = true;
-                                        break;
-                                    }
-                                }
-                            }
-                            else if (this.isOnCheck) {
-                                this.isOnCheck = false;
-                                for (const p of friends) {
-                                    if (p.type == 'king') {
-                                        p.isOnCheck = false;
-                                        break;
-                                    }
-                                }
-                            }
-                            this.turn = (this.turn == 1)? 0:1;
+                            this.movePieceTo(movingPieces, c.x, c.y);
                             if (this.autoRotate) this.rotate();
+                            flag = 'move';
                             break;
                         }
                     }
@@ -365,5 +342,6 @@ class Board extends BoardLite {
                 }
                 break;
         }
+        return flag;
     }
 }

@@ -108,38 +108,30 @@ class BoardLite {
                 console.log('CHECKMATE');
                 this.state = 2;
             }
-            this.pieces.black.push(
-                new Rook(0, 0, false),
-                new Knight(1, 0, false),
-                new Bishop(2, 0, false),
-                new Queen(3, 0, false),
-                new King(4, 0, false),
-                new Bishop(5, 0, false),
-                new Knight(6, 0, false),
-                new Rook(7, 0, false)
-            );
-            this.pieces.white.push(
-                new Rook(0, 7, true),
-                new Knight(1, 7, true),
-                new Bishop(2, 7, true),
-                new Queen(3, 7, true),
-                new King(4, 7, true),
-                new Bishop(5, 7, true),
-                new Knight(6, 7, true),
-                new Rook(7, 7, true)
-            );
-        } else {
-            for (const p of pieces.white) {
-                this.pieces.white.push(p.clone());
-            }
-            for (const p of pieces.black) {
-                this.pieces.black.push(p.clone());
+            this.isOnCheck = true;
+            this.cache.ct = 0;
+            for (const p of foes) {
+                if (p.type == 'king') {
+                    p.isOnCheck = true;
+                    break;
+                }
             }
         }
+        else if (this.isOnCheck) {
+            this.isOnCheck = false;
+            for (const p of friends) {
+                if (p.type == 'king') {
+                    p.isOnCheck = false;
+                    break;
+                }
+            }
+        }
+        this.turn = (this.turn == 1)? 0:1;
     }
 
     rotate () {
-        for (const pieces of this.pieces) {
+        for (const key in this.pieces) {
+            const pieces = this.pieces[key];
             pieces.forEach(p => {
                 if (p.type == 'pawn') {
                     p.dir = (p.dir == 1)? 0:1;
@@ -155,7 +147,7 @@ class BoardLite {
      * @param {Boolean} isWhite flag that indicates whether this is an eval for white pieces or not
      * @return {Number} Whereas 0 is Ok, 1 is Check, 2 is Checkmate A.K.A Gameover
      */
-    eval (isWhite) {
+    evalCheck(isWhite) {
         const {friends, foes} = Piece.getFriendsFoes(this.pieces, isWhite);
         const king = friends.find(p => p.type == 'king');
         for (const p of foes) {
