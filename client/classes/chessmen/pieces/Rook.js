@@ -11,7 +11,9 @@ class Rook extends Piece {
 
     clone() {
         const {x, y} = this.coord;
-        return new Rook(x, y, this.isWhite);
+        const newRook = new Rook(x, y, this.isWhite);
+        newRook.castlingable = this.castlingable;
+        return newRook;
     }
 
     getHashMoves(pieces) {

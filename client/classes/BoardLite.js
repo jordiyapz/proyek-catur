@@ -2,8 +2,10 @@ class BoardLite {
     constructor(pieces) {
         this.turn = 1; // 0 == black, 1 == white;
         this.isOnCheck = false;
-        this.pieces = {white:[], black:[]};
-        this.setupPieces(pieces);
+        if (!pieces) {
+            this.pieces = {white:[], black:[]};
+            this.setupPieces();
+        } else this.pieces = pieces;
         this.cache = {};
     }
 
@@ -11,11 +13,100 @@ class BoardLite {
      * Summary heart of Board constructor helper :) .
      * @param {Object} pieces template consisting of white and black pieces
      */
-    setupPieces(pieces) {
-        if (pieces === undefined || pieces === null) {
-            for (let i = 0; i < 8; i++) {
-                this.pieces.black.push(new Pawn(i, 1, false));
-                this.pieces.white.push(new Pawn(i, 6, true));
+    setupPieces() {
+        for (let i = 0; i < 8; i++) {
+            this.pieces.black.push(new Pawn(i, 1, false));
+            this.pieces.white.push(new Pawn(i, 6, true));
+        }
+        this.pieces.black.push(
+            new Rook    (0, 0, false),
+            new Knight  (1, 0, false),
+            new Bishop  (2, 0, false),
+            new Queen   (3, 0, false),
+            new King    (4, 0, false),
+            new Bishop  (5, 0, false),
+            new Knight  (6, 0, false),
+            new Rook    (7, 0, false)
+        );
+        this.pieces.white.push(
+            new Rook    (0, 7, true),
+            new Knight  (1, 7, true),
+            new Bishop  (2, 7, true),
+            new Queen   (3, 7, true),
+            new King    (4, 7, true),
+            new Bishop  (5, 7, true),
+            new Knight  (6, 7, true),
+            new Rook    (7, 7, true)
+        );
+
+    }
+
+    clone() {
+        const cln = new BoardLite();
+        for (const key in cln) {
+            if (key == 'pieces') {
+                cln[key] = this.clonePieces();
+            } else
+                cln[key] = Util.objCloner(this[key]);
+        }
+        return cln;
+    }
+
+    clonePieces() {
+        return BoardLite.clonePieces(this.pieces);
+    }
+    static clonePieces(pieces) {
+        const clone = {};
+        for (const key in pieces) {
+            const piecess = pieces[key];
+            clone[key] = [];
+            for (const p of piecess)
+                clone[key].push(p.clone());
+        }
+        return clone;
+    }
+
+    movePieceTo (piece, x, y) {
+        const {pieces} = this;
+        const {friends, foes} = Piece.getFriendsFoes(pieces, this.turn);
+        const c = createVector(x, y);
+        for (let i = 0; i < foes.length; i++) {
+            const p = foes[i];
+            if (p.coord.equals(c)) {
+                foes.splice(i, 1);
+                break;
+            }
+        }
+
+        const flag = piece.move(c.x, c.y);
+
+        if (this.cache.command == 'remove enpassantable') {
+            // This must be exec after the turn where enpassantable pawn moved
+            const {pawn} = this.cache;
+            pawn.enPassantable = false;
+            delete this.cache.command;
+            delete this.cache.pawn;
+        }
+
+        if (piece.type == 'pawn' && piece.enPassantable) {
+            this.cache.pawn = piece;
+            this.cache.command = 'remove enpassantable';
+        }
+
+        if (flag == 'PAWN PROMOTION') {
+            const pawn = piece;
+            this.cache.friends = friends;
+            this.cache.pawn = pawn;
+            this.state = 1;
+            return;
+        } else if (flag == 'ENPASSANT') {
+            this.doEnPassant(piece, foes);
+        }
+        const nextTurn = (this.turn==0);
+        if (this.evalCheck(nextTurn)) {
+            if (this.evalCheckmate(foes)) {
+                console.log('CHECKMATE');
+                this.state = 2;
             }
             this.pieces.black.push(
                 new Rook(0, 0, false),

@@ -219,21 +219,24 @@ class Board extends BoardLite {
     }
     onMousePressed () {
         switch (this.state) {
-            case 0:
-                if (!this.cache.isDragging) {
-                    this.cache.movingPieces = this.getPiece(mouseX, mouseY);
-                    if (this.cache.movingPieces) {
-                        if (this.cache.movingPieces.isWhite == (this.turn)) {
-                            const pieces = {white: this.pieces.white, black: this.pieces.black};
-                            this.cache.possibleMoves = this.cache.movingPieces.getPossibleMoves(pieces);
-                            this.cache.captureMoves = this.cache.movingPieces.getCaptureMoves(pieces, this.cache.possibleMoves);
-                            this.cache.offset = this.tileSize / 2;
-                            this.cache.ghost = this.cache.movingPieces.createGhost(mouseX-this.cache.offset, mouseY-this.cache.offset, this.tileSize);
-                            this.cache.isDragging = true;
-                        } else this.cache.movingPieces = null;
+            case 0: {
+                const {cache} = this;
+                if (!cache.isDragging) {
+                    cache.movingPieces = this.getPiece(mouseX, mouseY);
+                    const {movingPieces} = cache;
+                    if (movingPieces) {
+                        if (movingPieces.isWhite == (this.turn)) {
+                            const {pieces} = this;
+                            cache.possibleMoves = movingPieces.getPossibleMoves(pieces);
+                            cache.captureMoves = movingPieces.getCaptureMoves(pieces, cache.possibleMoves);
+                            cache.offset = this.tileSize / 2;
+                            cache.ghost = movingPieces.createGhost(mouseX-cache.offset, mouseY-cache.offset, this.tileSize);
+                            cache.isDragging = true;
+                        } else cache.movingPieces = null;
                     }
                 } break;
-            case 1:
+            }
+            case 1: {
                 const {promoteBtn} = this.property.promotionBox;
                 const btnArr = (this.turn == 1)? promoteBtn.white:promoteBtn.black;
                 for (let i = 0; i < btnArr.length; i++) {
@@ -270,25 +273,29 @@ class Board extends BoardLite {
                     }
                 }
                 break;
+            }
         }
     }
     onMouseDragged() {
         switch (this.state) {
-            case 0:
-                if (this.cache.ghost) this.cache.ghost.pos.set(
-                    mouseX-this.cache.offset, mouseY-this.cache.offset
+            case 0: {
+                const {ghost, offset} = this.cache;
+                if (ghost) ghost.pos.set(
+                    mouseX-offset, mouseY-offset
                 );
                 break;
+            }
         }
     }
     onMouseReleased() {
         switch (this.state) {
             case 0:
-                this.cache.isDragging = false;
-                const {movingPieces} = this.cache;
+                const {cache} = this;
+                cache.isDragging = false;
+                const {movingPieces} = cache;
                 if (movingPieces) {
                     const mouseVec = this.toCoord(mouseX, mouseY);
-                    for (const c of this.cache.possibleMoves) {
+                    for (const c of cache.possibleMoves) {
                         if(mouseVec.equals(c)) {
                             const {pieces} = this;
                             const {friends, foes} = Piece.getFriendsFoes(pieces, this.turn);
@@ -352,10 +359,9 @@ class Board extends BoardLite {
                             break;
                         }
                     }
-
-                    this.cache.movingPieces = null;
-                    this.cache.possibleMoves = null;
-                    this.cache.ghost = null;
+                    cache.movingPieces = null;
+                    cache.possibleMoves = null;
+                    cache.ghost = null;
                 }
                 break;
         }

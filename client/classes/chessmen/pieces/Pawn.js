@@ -10,7 +10,15 @@ class Pawn extends Piece {
 
     clone() {
         const {x, y} = this.coord;
-        return new Pawn(x, y, this.isWhite);
+        const newPawn = new Pawn(x, y, this.isWhite);
+        newPawn.dir = this.dir;
+        newPawn.started = this.started;
+        newPawn.enPassantable = this.enPassantable;
+        const {enPassantMoves} = this.cache;
+        for (const c of enPassantMoves) {
+            newPawn.cache.enPassantMoves.push(c.copy());
+        }
+        return newPawn;
     }
 
     move(x, y) {
