@@ -10,14 +10,24 @@ class GameModule {
             this.agent = new Agent(this.board, true);
         }
         this.history = [this.board.clone()];
+        this.maxUndo = null;
+        // this.justUndo = false;
     }
 
     update() {}
 
     undo() {
-        if (this.history.length > 0) {
-            this.board = this.history.pop();
+        const {history} = this;
+        if (history.length > 1) {
+            // if (!this.justUndo) {
+            history.pop();
+                // console.log('pop');
+            // }
+            this.board = history.pop();
+            history.push(this.board.clone());
+            // this.justUndo = true;
         }
+        return history.length;
     }
     render() {
         this.board.render();
@@ -29,7 +39,8 @@ class GameModule {
         const flag = this.board.onMouseReleased();
         if (flag == 'move') {
             this.history.push(this.board.clone());
-            if (this.history.length > 3) this.history.shift();
+            if (this.maxUndo && this.history.length > this.maxUndo) this.history.shift();
+            console.log(this.history.length);
         }
     }
     onMouseDragged() {

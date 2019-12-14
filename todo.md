@@ -12,7 +12,7 @@
 - [x] Tambahkan Castling
 - [x] Pawn Promotion
 - [x] En Passant
-- [ ] Tambahkan undo
+- [x] Tambahkan undo
 - [ ] Pembersihan Bug
 - [ ] Buat unit testing
 - [ ] klik and drop

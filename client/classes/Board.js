@@ -17,7 +17,6 @@ class Board extends BoardLite {
         };
         this.isOnCheck = false;
         this.setupProperty();
-        // this.rotate();
     }
 
     clone () {
