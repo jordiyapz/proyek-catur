@@ -27,6 +27,9 @@ function preload() {
             loadImage('assets/pieces/black.king.png')
         ]
     };
+    Global.images.gui = {
+        undo: loadImage('assets/gameUI/undo.png')    
+    };
 }
 
 function resizePieceImages (size) {
