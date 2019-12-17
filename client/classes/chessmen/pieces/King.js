@@ -2,6 +2,7 @@ class King extends Piece {
     constructor(x, y, isWhite) {
         super(x, y, isWhite, 5, 'king');
         this.castlingable = true;
+        this.hasCastled = false;
         this.castableRooks = [];
         this.isOnCheck = false;
     }
@@ -9,8 +10,9 @@ class King extends Piece {
     clone() {
         const {x, y} = this.coord;
         const newKing = new King(x, y, this.isWhite);
-        const {castableRooks, castlingable, isOnCheck} = this;
+        const {castableRooks, castlingable, isOnCheck, hasCastled} = this;
         newKing.castlingable = castlingable;
+        newKing.hasCastled = hasCastled;
         for (const rook of castableRooks) {
             newKing.castableRooks.push(rook.clone());
         }
@@ -26,6 +28,7 @@ class King extends Piece {
                 for (const rook of this.castableRooks) {
                     if (x*fac < rook.coord.x*fac) {
                         rook.move(x-fac, y);
+                        this.hasCastled = true;
                     }
                 }
             }
@@ -71,6 +74,9 @@ class King extends Piece {
         for (const p of friends) {
             if (p.type == 'rook' && p.castlingable) castableRooks.push(p);
             if (castableRooks.length >= 2) break;
+        }
+        if (castableRooks.length == 0) {
+            this.castlingable = false;
         }
         for (const rook of castableRooks) {
             const rx = rook.coord.x;
