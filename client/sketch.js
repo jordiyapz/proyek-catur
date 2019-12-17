@@ -3,10 +3,11 @@ let canvas, gm;
 function setup() {
     resizePieceImages(Global.tileSize);
     canvas = createCanvas(Global.width, Global.height);
-    gm = new GameModule(0);
+    gm = new GameModule(1);
     frameRate(60);
 }
 function draw() {
+    gm.update();
     background(0);
     gm.render();
 }
