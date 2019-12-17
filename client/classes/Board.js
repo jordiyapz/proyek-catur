@@ -201,9 +201,9 @@ class Board extends BoardLite {
                 if (alpha < 0) alpha = 0;
                 fill(80, alpha);
                 stroke(255, alpha);
-                text ('CHECK', size/2, size/2);
+                text ('CHECK', pos.x + size/2, pos.y + size/2);
                 pop();
-                this.cache.ct += 2;
+                this.cache.ct += 5;
             }
         }
 
@@ -234,7 +234,7 @@ class Board extends BoardLite {
             textSize(size*.14);
             textAlign(CENTER, CENTER);
             fill(255,0,0);
-            text ('CHECKMATE', size/2, size/2);
+            text ('CHECKMATE', pos.x + size/2, pos.y + size/2);
             pop();
         }
     }
