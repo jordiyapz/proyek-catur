@@ -37,10 +37,12 @@
 #### Pembuatan AI
 
 - [x] Perbaiki pembagian tugas Board dan BoardLite
-- [ ] Buat agen
-- [ ] Tambahkan cek nilai statis
-- [ ] Tambahkan method minimax
-- [ ] Buat Alpha Beta Prunning
+- [x] Buat agen
+- [x] Tambahkan cek nilai statis
+- [x] Tambahkan method minimax
+- [x] Buat Alpha Beta Prunning
+- [ ] Perbaiki bug
+- [ ] Optimisasi
 
 ### Mode Online Multiplayer
 
