@@ -13,7 +13,7 @@ class Button {
         return this;
     }
     listenClick() {
-        if (this.isClicked())
+        if (this.isClicked() && this.onClick)
             this.onClick();
     }
     listenHover() {
