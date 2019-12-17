@@ -1,12 +1,11 @@
 const Global = {
     tileSize: 1,
-    width: 540,
+    width: null,
     height: 540,
     images: {piece:null},
     border: 5
 };
 
-Global.tileSize = (Global.width - Global.border*2) / 8;
 
 function preload() {
     Global.images.piece = {
@@ -28,7 +27,20 @@ function preload() {
         ]
     };
     Global.images.gui = {
-        undo: loadImage('assets/gameUI/undo.png')    
+        undo: loadImage('assets/gameUI/undo.png'),
+        boxRight: loadImage('assets/gameUI/box-right.png'),
+        boxLeftUp: loadImage('assets/gameUI/box-left-up.png'),
+        boxLeftBottom: loadImage('assets/gameUI/box-left-bottom.png'),
+        flag: loadImage('assets/gameUI/flag.png'),
+        restart: loadImage('assets/gameUI/restart.png'),
+        king1: loadImage('assets/gameUI/king.png'),
+        king2: loadImage('assets/gameUI/king.png'),
+        p1: loadImage('assets/gameUI/p1.png'),
+        p2: loadImage('assets/gameUI/p2.png'),
+        cblack1: loadImage('assets/gameUI/cblack.png'),
+        cblack2: loadImage('assets/gameUI/cblack.png'),
+        cwhite1: loadImage('assets/gameUI/cwhite.png'),
+        cwhite2: loadImage('assets/gameUI/cwhite.png')
     };
 }
 
