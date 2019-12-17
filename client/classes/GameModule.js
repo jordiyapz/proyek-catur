@@ -146,6 +146,9 @@ class GameModule {
         this.board.onMousePressed();
     }
     onMouseReleased() {
+        if (this.btns.restart.isClicked()) {
+            return 'restart';
+        }
         const flag = this.board.onMouseReleased();
         if (flag == 'move') {
             this.history.push(this.board.clone());
