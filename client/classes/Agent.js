@@ -154,6 +154,7 @@ class Agent {
     negaRoot (depth = 0) {
         const rootBoard = this.board;
         const movements = Agent.generateAllPossibleMoves(rootBoard, this.mySide);
+        if (movements.length == 0) console.warn('movements.length is 0');
         let bestMove = null;
         let score = -Infinity;
         let alpha = -Infinity;
@@ -162,8 +163,7 @@ class Agent {
         for (const {piece, moves} of movements) {
             for (const move of moves) {
                 const testBoard = rootBoard.clone();
-                const p = [...testBoard.pieces.white, ...testBoard.pieces.black]
-                    .find(piz => piz.coord.equals(piece.coord));
+                const p = testBoard.pieces[this.mySide].find(piz => piz.coord.equals(piece.coord));
                 testBoard.movePieceTo(p, move.x, move.y);
                 const cur = -Agent.negaMax(testBoard, depth-1, -beta, -alpha, -color);
                 if (cur > score) {
@@ -186,8 +186,7 @@ class Agent {
         for (const {piece, moves} of movements) {
             for (const move of moves) {
                 const testBoard = board.clone();
-                const p = [...testBoard.pieces.white, ...testBoard.pieces.black]
-                    .find(piz => piz.coord.equals(piece.coord));
+                const p = testBoard.pieces[pov].find(piz => piz.coord.equals(piece.coord));
                 testBoard.movePieceTo(p, move.x, move.y);
                 const cur = -Agent.negaMax(testBoard, depth-1, -beta, -alpha, -color);
                 score = max(cur, score);
