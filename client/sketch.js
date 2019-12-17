@@ -2,11 +2,11 @@ let canvas, gm;
 
 function setup() {
     Global.width = windowWidth;
-    Global.height = windowHeight -2;
+    Global.height = windowHeight;
     Global.tileSize = 600/8;
     resizePieceImages(Global.tileSize);
-    canvas = createCanvas(Global.width, Global.height);
-    gm = new GameModule(1);
+    canvas = createCanvas(Global.width, Global.height).parent('canvas-wrapper');
+    gm = new GameModule(0);
     frameRate(60);
 }
 function draw() {
@@ -23,7 +23,7 @@ function mousePressed() {
 function mouseReleased() {
     if (gm) {
         const flag = gm.onMouseReleased();
-        if (flag == 'restartWoii') {
+        if (flag == 'restart') {
             noLoop();
             gm = new GameModule();
             loop();
