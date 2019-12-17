@@ -3,6 +3,10 @@
 ## List of Known Bugs
 
 - [ ] Pada rotate, hitam kadang bisa skip sendiri
+- [ ] Ketika `Agent` lagi mikir, browser nge-*freeze*
+- [ ] Kadang `Agent` ngeskip jalannya
+- [ ] Pernah sampai nge-*reload* tab sendiri waktu lagi mikir
+- [ ] Pada `evalCheck(...)` di *BoardLite.js* ada error king tidak ditemukan
 
 ## List of Predicted Bugs
 
