@@ -29,7 +29,7 @@ class GameModule {
                     if (board.autoRotate) board.rotate();
                     this.history.push(board.clone());
                     if (this.maxUndo && this.history.length > this.maxUndo) this.history.shift();
-                }
+                } else console.warn('No move found by Agent');
                 this.playerMoved = false;
                 this.agent.isThinking = false;
             }

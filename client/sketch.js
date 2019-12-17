@@ -3,7 +3,7 @@ let canvas, gm;
 function setup() {
     resizePieceImages(Global.tileSize);
     canvas = createCanvas(Global.width, Global.height);
-    gm = new GameModule(1);
+    gm = new GameModule(0);
     frameRate(60);
 }
 function draw() {
