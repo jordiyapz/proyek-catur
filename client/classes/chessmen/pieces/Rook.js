@@ -2,6 +2,7 @@ class Rook extends Piece {
     constructor(x, y, isWhite) {
         super(x, y, isWhite, 1, 'rook');
         this.castlingable = true;
+        this.dir = (this.coord.y < 4)? 1:0;
     }
 
     move(x, y) {
@@ -13,6 +14,7 @@ class Rook extends Piece {
         const {x, y} = this.coord;
         const newRook = new Rook(x, y, this.isWhite);
         newRook.castlingable = this.castlingable;
+        newRook.dir = this.dir;
         return newRook;
     }
 
