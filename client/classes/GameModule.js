@@ -120,18 +120,21 @@ class GameModule {
         }
     }
     render() {
-        if (this.agent){
-            if (this.agent.isThinking) {
-                fill(80);
-                text('thinking...', 100, 100, 200, 200);
-            }
-        }
         const {property} = this;
         for (const key in property) {
             const prop = property[key];
             image(prop.img, prop.pos.x, prop.pos.y, prop.width, prop.height);
         }
-        this.board.render();
+        const {board} = this;
+        board.render();
+        if (this.agent) {
+            if (this.agent.isThinking) {
+                fill(80);
+                textAlign(CENTER, BOTTOM);
+                textSize(50);
+                text('Thinking...', board.pos.x + board.tileSize * 4, board.pos.y + board.tileSize * 4);
+            }
+        }
         const {btns} = this;
         for (const btnKey in btns) {
             const btn = btns[btnKey];
