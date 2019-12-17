@@ -1,6 +1,9 @@
 let canvas, gm;
 
 function setup() {
+    Global.width = windowWidth;
+    Global.height = windowHeight -2;
+    Global.tileSize = 600/8;
     resizePieceImages(Global.tileSize);
     canvas = createCanvas(Global.width, Global.height);
     gm = new GameModule(0);
@@ -8,7 +11,7 @@ function setup() {
 }
 function draw() {
     gm.update();
-    background(0);
+    background('#6d3475');
     gm.render();
 }
 
@@ -18,7 +21,14 @@ function mousePressed() {
 }
 
 function mouseReleased() {
-    if (gm) gm.onMouseReleased();
+    if (gm) {
+        const flag = gm.onMouseReleased();
+        if (flag == 'restartWoii') {
+            noLoop();
+            gm = new GameModule();
+            loop();
+        }
+    }
     return false;
 }
 
