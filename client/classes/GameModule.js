@@ -26,12 +26,13 @@ class GameModule {
         const halfBoard = tileSize*4;
         const rightGap = halfBoard/1.5;
         const leftGap = width/2 - halfBoard;
+        const leftGapNBoard = width/2 + halfBoard;
         const topGap = height/2 - halfBoard;
         this.property = {
             boxRight: {
                 img: images.gui.boxRight,
                 pos: {
-                    x: width/2 + halfBoard+(leftGap)*.20,
+                    x: leftGapNBoard + leftGap*.20,
                     y: topGap
                 },
                 width: (leftGap)*.60,
@@ -57,17 +58,17 @@ class GameModule {
             }
         }
         this.btns = {
-            undo: new Button('undo',width/2 + halfBoard + leftGap*.65,halfBoard + rightGap, 40),
-            flag: new Button('flag',width/2 + halfBoard + leftGap*.45,halfBoard + rightGap, 40),
-            restart: new Button('restart',width/2 + halfBoard + leftGap*.25,halfBoard + rightGap, 40),
-            king1: new Button('king1',width/2 + halfBoard + leftGap*.30,halfBoard + rightGap*1.3, 70),
-            king2: new Button('king2',width/2 + halfBoard + leftGap*.40 + topGap,halfBoard - rightGap*1.2, 70),
-            p1: new Button('p1',width/2 + halfBoard + leftGap/1.9,halfBoard + rightGap+rightGap/2, 70,20),
-            p2: new Button('p2',width/2 + halfBoard + leftGap/3.2,halfBoard-400 + rightGap, 70,20),
-            cblack1: new Button('king1',width/2 + halfBoard + leftGap*.22,halfBoard+50 + rightGap*1.3, 20),
-            cwhite1: new Button('king1',width/2 + halfBoard + leftGap*.22,halfBoard+70 + rightGap+5, 20),
-            cwhite2: new Button('king2',width/2 + halfBoard+105 + leftGap*.45, halfBoard+15 - rightGap -50, 20),
-            cblack2: new Button('king2',width/2 + halfBoard + leftGap*.444 + topGap+60,halfBoard - rightGap, 20)
+            undo:       new Button('undo',      leftGapNBoard + leftGap*.65,        halfBoard*1.75 - 20,            40),
+            flag:       new Button('flag',      leftGapNBoard + leftGap*.45,        halfBoard*1.75 - 20,            40),
+            restart:    new Button('restart',   leftGapNBoard + leftGap*.25,        halfBoard*1.75 - 20,            40),
+            king1:      new Button('king1',     leftGapNBoard + leftGap*.4 - 35,    topGap + tileSize*7.42 - 35,    70),
+            king2:      new Button('king2',     leftGapNBoard + leftGap*.6 - 35,    topGap + tileSize*.58 - 35,     70),
+            p1:         new Button('p1',        leftGapNBoard + leftGap*.6 - 35,    topGap + tileSize*7.42 - 10,    70,     20),
+            p2:         new Button('p2',        leftGapNBoard + leftGap*.4 - 35,    topGap + tileSize*.58 - 10,     70,     20),
+            cblack1:    new Button('cb1',       leftGapNBoard + leftGap*.26 - 10,   topGap + tileSize*7.42 - 10,    20),
+            cwhite1:    new Button('cw1',       leftGapNBoard + leftGap*.26 - 10,   topGap + tileSize*7.42 - 10,    20),
+            cwhite2:    new Button('cb2',       leftGapNBoard + leftGap*.73 - 10,   topGap + tileSize*.58 - 10,     20),
+            cblack2:    new Button('cw2',       leftGapNBoard + leftGap*.73 - 10,   topGap + tileSize*.58 - 10,     20)
         }
         this.btns.undo.setImage(Global.images.gui.undo);
         this.btns.undo.onClick = () => { this.undo(); }
