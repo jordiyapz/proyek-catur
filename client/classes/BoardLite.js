@@ -26,23 +26,23 @@ class BoardLite {
         }
         this.pieces.black.push(
             new Rook    (0, 0, false),
+            new Rook    (7, 0, false),
             new Knight  (1, 0, false),
-            new Bishop  (2, 0, false),
-            new Queen   (3, 0, false),
-            new King    (4, 0, false),
-            new Bishop  (5, 0, false),
             new Knight  (6, 0, false),
-            new Rook    (7, 0, false)
+            new Bishop  (2, 0, false),
+            new Bishop  (5, 0, false),
+            new Queen   (3, 0, false),
+            new King    (4, 0, false)
         );
         this.pieces.white.push(
             new Rook    (0, 7, true),
+            new Rook    (7, 7, true),
             new Knight  (1, 7, true),
-            new Bishop  (2, 7, true),
-            new Queen   (3, 7, true),
-            new King    (4, 7, true),
-            new Bishop  (5, 7, true),
             new Knight  (6, 7, true),
-            new Rook    (7, 7, true)
+            new Bishop  (2, 7, true),
+            new Bishop  (5, 7, true),
+            new Queen   (3, 7, true),
+            new King    (4, 7, true)
         );
 
     }
@@ -117,7 +117,7 @@ class BoardLite {
         for (const key in this.pieces) {
             const pieces = this.pieces[key];
             pieces.forEach(p => {
-                if (p.type == 'pawn') {
+                if (p.type == 'pawn' || p.type == 'rook') {
                     p.dir = (p.dir == 1)? 0:1;
                 }
                 const c = p.coord;
